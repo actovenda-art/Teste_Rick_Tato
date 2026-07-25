@@ -29,7 +29,7 @@
         .nav-links { position: relative; display: flex; gap: 28px; list-style: none; }
         .nav-links a { position: relative; color: #a0a0a0; text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.3s; }
         .nav-links a:hover, .nav-links a[aria-current="page"] { color: #fff; }
-        .nav-links a[aria-current="page"]::after { content: ''; position: absolute; left: 0; right: 0; bottom: -9px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #667eea, #764ba2); }
+        .nav-links a[aria-current="page"]::after { content: ''; position: absolute; left: 0; right: 0; bottom: -9px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #667eea, #764ba2); opacity: 0; }
         .nav-links.indicator-ready a[aria-current="page"]::after { opacity: 0; }
         .nav-indicator { position: absolute; left: 0; bottom: -9px; width: 0; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #667eea, #764ba2); opacity: 0; pointer-events: none; transform: translateX(0); transition: width 0.36s cubic-bezier(0.22, 1, 0.36, 1), transform 0.36s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease; }
         .nav-links.indicator-ready .nav-indicator { opacity: 1; }
@@ -154,6 +154,7 @@
             .cta-nav { display: none; }
         }
     </style>
+    <link rel="stylesheet" href="/page-transitions.css">
 </head>
 <body>
 
@@ -183,6 +184,7 @@
         </div>
     </header>
 
+    <main>
     <section class="hero" data-scroll-bg="0">
         <div class="container">
             <div class="hero-badge">🚀 Now Accepting Clients in Ireland & Florida</div>
@@ -462,6 +464,8 @@
             </div>
         </div>
     </section>
+
+    </main>
 
     <footer>
         <div class="container">

@@ -42,10 +42,26 @@
                 requestAnimationFrame(() => moveIndicator(activeLink));
             });
         }
+
+        return shouldSlide;
     }
 
-    const fontsReady = document.fonts?.ready ?? Promise.resolve();
-    fontsReady.then(initializeIndicator);
+    function startIndicator() {
+        const isSliding = initializeIndicator();
+
+        if (document.fonts?.status === 'loading') {
+            document.fonts.ready.then(() => {
+                window.setTimeout(() => moveIndicator(activeLink, false), isSliding ? 420 : 0);
+            });
+        }
+    }
+
+    const activeViewTransition = document.activeViewTransition;
+    if (activeViewTransition && !reducedMotion.matches) {
+        activeViewTransition.finished.then(startIndicator, startIndicator);
+    } else {
+        startIndicator();
+    }
 
     navList.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', event => {

@@ -20,6 +20,7 @@ Depois, acesse `http://localhost:8000`.
 - `pricing.html`: pacotes, comparação e perguntas frequentes.
 - `contact.html`: briefing detalhado, contatos e próximos passos.
 - `page-styles.css`: estilos compartilhados pelas páginas internas.
+- `page-transitions.css`: transição entre páginas com cabeçalho estável.
 - `page-effects.js`: efeitos de rolagem e interações compartilhadas.
 - `nav-indicator.js`: animação deslizante da página ativa no menu.
 - `favicon.svg`: ícone da marca OR Creative exibido no navegador.
