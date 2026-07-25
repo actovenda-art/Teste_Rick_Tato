@@ -56,10 +56,10 @@
         .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 60px; }
         .portfolio-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; overflow: hidden; transition: all 0.3s; }
         .portfolio-item:hover { transform: translateY(-8px); border-color: rgba(102,126,234,0.3); }
-        .portfolio-img { height: 220px; background: linear-gradient(135deg, #1a1a2e, #16213e); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-        .portfolio-img::before { content: ''; position: absolute; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(102,126,234,0.1), transparent); transform: rotate(45deg); animation: shine 3s infinite; }
-        @keyframes shine { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
-        .portfolio-img span { font-size: 48px; }
+        .portfolio-img { height: 220px; background: linear-gradient(135deg, #1a1a2e, #16213e); position: relative; overflow: hidden; }
+        .portfolio-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+        .portfolio-item:hover .portfolio-img img { transform: scale(1.06); }
+        .portfolio-img::before { content: ''; position: absolute; z-index: 1; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(10,10,10,0.45)); pointer-events: none; }
         .portfolio-content { padding: 28px; }
         .portfolio-tag { display: inline-block; background: rgba(102,126,234,0.1); color: #667eea; padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
         .portfolio-content h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
@@ -196,7 +196,9 @@
             <div class="portfolio-grid">
                 
                 <div class="portfolio-item">
-                    <div class="portfolio-img"><span>💈</span></div>
+                    <div class="portfolio-img">
+                        <img src="assets/barbershop.jpg" alt="Interior elegante de uma barbearia com três cadeiras" loading="lazy">
+                    </div>
                     <div class="portfolio-content">
                         <div class="portfolio-tag">Barbershop</div>
                         <h3>The Dublin Barber Co.</h3>
@@ -218,7 +220,9 @@
                 </div>
 
                 <div class="portfolio-item">
-                    <div class="portfolio-img"><span>🍔</span></div>
+                    <div class="portfolio-img">
+                        <img src="assets/restaurant.jpg" alt="Hambúrguer artesanal fotografado para um restaurante" loading="lazy">
+                    </div>
                     <div class="portfolio-content">
                         <div class="portfolio-tag">Restaurant</div>
                         <h3>Miami Bites</h3>
@@ -240,7 +244,9 @@
                 </div>
 
                 <div class="portfolio-item">
-                    <div class="portfolio-img"><span>💪</span></div>
+                    <div class="portfolio-img">
+                        <img src="assets/fitness.jpg" alt="Academia moderna com equipamentos de musculação" loading="lazy">
+                    </div>
                     <div class="portfolio-content">
                         <div class="portfolio-tag">Fitness</div>
                         <h3>FitLife Cork</h3>
