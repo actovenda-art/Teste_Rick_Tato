@@ -3,7 +3,7 @@
     const indicator = navList?.querySelector('.nav-indicator');
     const activeLink = navList?.querySelector('a[aria-current="page"]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const previousPageKey = 'ro-creative-nav-previous-page';
+    const previousPageKey = 'or-creative-nav-previous-page';
 
     if (!navList || !indicator || !activeLink) return;
 

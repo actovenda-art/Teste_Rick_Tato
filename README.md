@@ -1,4 +1,4 @@
-# RO Creative
+# OR Creative
 
 Site estático de portfólio para serviços de web design na Irlanda e na Flórida.
 
@@ -22,6 +22,8 @@ Depois, acesse `http://localhost:8000`.
 - `page-styles.css`: estilos compartilhados pelas páginas internas.
 - `page-effects.js`: efeitos de rolagem e interações compartilhadas.
 - `nav-indicator.js`: animação deslizante da página ativa no menu.
+- `favicon.svg`: ícone da marca OR Creative exibido no navegador.
+- `vercel.json`: configuração de URLs limpas no Vercel.
 - `assets/`: imagens ilustrativas utilizadas no portfólio.
 - `.gitignore`: arquivos locais que não devem ser versionados.
 
