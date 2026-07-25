@@ -21,6 +21,7 @@ Depois, acesse `http://localhost:8000`.
 - `contact.html`: briefing detalhado, contatos e próximos passos.
 - `page-styles.css`: estilos compartilhados pelas páginas internas.
 - `page-effects.js`: efeitos de rolagem e interações compartilhadas.
+- `nav-indicator.js`: animação deslizante da página ativa no menu.
 - `assets/`: imagens ilustrativas utilizadas no portfólio.
 - `.gitignore`: arquivos locais que não devem ser versionados.
 

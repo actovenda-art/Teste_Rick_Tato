@@ -28,10 +28,13 @@
         header { padding: 20px 0; position: fixed; width: 100%; top: 0; background: rgba(10,10,10,0.86); backdrop-filter: blur(14px); z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.09); }
         .nav { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 24px; line-height: 1.65; }
         .logo { font-size: 23px; font-weight: 800; letter-spacing: -0.04em; text-decoration: none; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-links { display: flex; gap: 28px; list-style: none; }
+        .nav-links { position: relative; display: flex; gap: 28px; list-style: none; }
         .nav-links a { position: relative; color: #a0a0a0; text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.3s; }
         .nav-links a:hover, .nav-links a[aria-current="page"] { color: #fff; }
         .nav-links a[aria-current="page"]::after { content: ''; position: absolute; left: 0; right: 0; bottom: -9px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #667eea, #764ba2); }
+        .nav-links.indicator-ready a[aria-current="page"]::after { opacity: 0; }
+        .nav-indicator { position: absolute; left: 0; bottom: -9px; width: 0; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #667eea, #764ba2); opacity: 0; pointer-events: none; transform: translateX(0); transition: width 0.36s cubic-bezier(0.22, 1, 0.36, 1), transform 0.36s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease; }
+        .nav-links.indicator-ready .nav-indicator { opacity: 1; }
         .menu-toggle { width: 42px; height: 42px; display: none; place-items: center; gap: 4px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; background: rgba(255,255,255,0.04); cursor: pointer; }
         .menu-toggle span { width: 18px; height: 2px; display: block; border-radius: 2px; background: #fff; }
         .cta-nav { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 13px 24px; border-radius: 11px; text-decoration: none; font-size: 14px; font-weight: 700; line-height: 1.65; transition: transform 0.3s, box-shadow 0.3s; }
@@ -138,6 +141,7 @@
             .nav-links a { display: block; padding: 12px 14px; border-radius: 9px; }
             .nav-links a:hover, .nav-links a[aria-current="page"] { background: rgba(255,255,255,0.05); }
             .nav-links a[aria-current="page"]::after { display: none; }
+            .nav-indicator { display: none; }
             .cta-nav { padding: 11px 16px; font-size: 13px; }
             .pricing-card.featured { transform: scale(1); }
             .scroll-bg-layer.active { opacity: 0.38; }
@@ -172,6 +176,7 @@
                     <li><a href="portfolio.html">Portfolio</a></li>
                     <li><a href="pricing.html">Pricing</a></li>
                     <li><a href="contact.html">Contact</a></li>
+                    <li class="nav-indicator" aria-hidden="true"></li>
                 </ul>
                 <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation menu">
                     <span></span><span></span><span></span>
@@ -583,6 +588,7 @@
 
         updateScrollBackground();
     </script>
+    <script src="nav-indicator.js"></script>
 
 </body>
 </html>
