@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact RO Creative to discuss a web design, video, or social media project.">
+    <title>Contact | RO Creative</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="page-styles.css">
+</head>
+<body>
+    <div class="scroll-background" aria-hidden="true">
+        <div class="scroll-bg-layer active" style="background-image:url('assets/barbershop.jpg')"></div>
+        <div class="scroll-bg-layer" style="background-image:url('assets/restaurant.jpg')"></div>
+        <div class="scroll-bg-layer" style="background-image:url('assets/fitness.jpg')"></div>
+    </div>
+
+    <header class="site-header">
+        <div class="container">
+            <nav class="site-nav-wrap" aria-label="Main navigation">
+                <a class="brand" href="index.html">RO Creative</a>
+                <ul class="site-nav" id="site-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="portfolio.html">Portfolio</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="contact.html" aria-current="page">Contact</a></li>
+                </ul>
+                <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation menu">
+                    <span></span><span></span><span></span>
+                </button>
+                <a class="nav-cta" href="#project-form">Get a Quote</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero" data-scroll-bg="0">
+            <div class="container page-hero-content">
+                <nav class="breadcrumbs" aria-label="Breadcrumb">
+                    <a href="index.html">Home</a><span>/</span><span>Contact</span>
+                </nav>
+                <span class="eyebrow">Contact</span>
+                <h1>Tell me what you want<br><span>your business to achieve</span></h1>
+                <p>A useful first message does not need to be technical. Share your business, the problem you want to solve, and the result you hope to create.</p>
+                <div class="hero-actions">
+                    <a class="button button-primary" href="#project-form">Complete the Project Brief</a>
+                    <a class="button button-secondary" href="pricing.html">Review Pricing First</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section compact" id="project-form" data-scroll-bg="1">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">Project brief</span>
+                    <h2>Start with the essentials</h2>
+                    <p>The more context you provide, the more useful the first recommendation can be.</p>
+                </div>
+                <div class="contact-layout">
+                    <aside class="contact-panel">
+                        <h2>Let’s build something useful</h2>
+                        <p>RO Creative works with small businesses in Ireland and Florida on websites, promotional content, and connected digital presence.</p>
+                        <div class="contact-methods">
+                            <div class="contact-method">
+                                <div class="contact-method-icon">📧</div>
+                                <div><strong>Email</strong><span>hello@rickwebdesign.com</span></div>
+                            </div>
+                            <div class="contact-method">
+                                <div class="contact-method-icon">📱</div>
+                                <div><strong>WhatsApp</strong><span>+353 XX XXX XXXX</span></div>
+                            </div>
+                            <div class="contact-method">
+                                <div class="contact-method-icon">📍</div>
+                                <div><strong>Service area</strong><span>Ireland & Florida, USA</span></div>
+                            </div>
+                            <div class="contact-method">
+                                <div class="contact-method-icon">⏱️</div>
+                                <div><strong>Typical response</strong><span>Within one business day</span></div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <form class="contact-form" data-demo-form>
+                        <div class="form-row">
+                            <div class="field">
+                                <label for="name">Your name</label>
+                                <input id="name" name="name" type="text" autocomplete="name" placeholder="John Smith" required>
+                            </div>
+                            <div class="field">
+                                <label for="business">Business name</label>
+                                <input id="business" name="business" type="text" autocomplete="organization" placeholder="Your Business" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="field">
+                                <label for="email">Email</label>
+                                <input id="email" name="email" type="email" autocomplete="email" placeholder="john@business.com" required>
+                            </div>
+                            <div class="field">
+                                <label for="location">Location</label>
+                                <select id="location" name="location" required>
+                                    <option value="">Select your location</option>
+                                    <option value="ireland">Ireland</option>
+                                    <option value="florida">Florida, USA</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="field">
+                                <label for="package">Package or scope</label>
+                                <select id="package" name="package" required>
+                                    <option value="">Select a starting point</option>
+                                    <option value="starter">Starter (€400 / $450)</option>
+                                    <option value="business">Business (€800 / $900)</option>
+                                    <option value="premium">Premium (€1,500 / $1,700)</option>
+                                    <option value="custom">Custom project</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="timeline">Preferred timeline</label>
+                                <select id="timeline" name="timeline">
+                                    <option value="">Select a timeline</option>
+                                    <option value="asap">As soon as possible</option>
+                                    <option value="month">Within one month</option>
+                                    <option value="quarter">Within three months</option>
+                                    <option value="exploring">Just exploring</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="project">Tell me about the project</label>
+                            <textarea id="project" name="project" placeholder="What does your business do, what is not working today, and what would a successful result look like?" required></textarea>
+                        </div>
+                        <button class="button button-primary" type="submit">Prepare Project Enquiry</button>
+                        <p class="form-note">This form is currently a front-end project brief. Message delivery will be connected when the form backend is configured.</p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" data-scroll-bg="2">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">What happens next</span>
+                    <h2>A straightforward first conversation</h2>
+                </div>
+                <div class="process-grid">
+                    <article class="step-card">
+                        <span class="step-number">01</span>
+                        <h3>Brief review</h3>
+                        <p>Your goals, audience, current presence, requested features, and preferred timing are reviewed together.</p>
+                    </article>
+                    <article class="step-card">
+                        <span class="step-number">02</span>
+                        <h3>Discovery call</h3>
+                        <p>A short call fills any gaps and confirms what customers need to see, understand, and do.</p>
+                    </article>
+                    <article class="step-card">
+                        <span class="step-number">03</span>
+                        <h3>Scope & proposal</h3>
+                        <p>You receive a recommended package or custom scope with deliverables, timeline, and payment structure.</p>
+                    </article>
+                    <article class="step-card">
+                        <span class="step-number">04</span>
+                        <h3>Project start</h3>
+                        <p>Once approved, content collection and the creative direction begin with clear review milestones.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" data-scroll-bg="0">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">Helpful preparation</span>
+                    <h2>What to bring to the conversation</h2>
+                </div>
+                <div class="info-grid">
+                    <article class="info-panel">
+                        <h3>Your priority</h3>
+                        <p>Choose the most important result: more enquiries, direct orders, bookings, credibility, search visibility, or a better customer experience.</p>
+                    </article>
+                    <article class="info-panel">
+                        <h3>Your existing assets</h3>
+                        <p>Gather your logo, brand colors, service list, pricing, photography, testimonials, social profiles, and any current website access.</p>
+                    </article>
+                    <article class="info-panel">
+                        <h3>Your references</h3>
+                        <p>Share two or three websites or brands you like and explain what feels useful, clear, or appropriate about them.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" data-scroll-bg="1">
+            <div class="narrow">
+                <div class="section-heading">
+                    <span class="eyebrow">Contact questions</span>
+                    <h2>Useful answers before you enquire</h2>
+                </div>
+                <div class="faq-list">
+                    <details>
+                        <summary>Do I need to have all of my content ready?</summary>
+                        <p>No. Existing text, photos, offers, and brand materials are helpful, but the discovery process can identify what is missing and what should be prioritized.</p>
+                    </details>
+                    <details>
+                        <summary>Can we work remotely?</summary>
+                        <p>Yes. The process is designed for remote collaboration with businesses across Ireland and Florida.</p>
+                    </details>
+                    <details>
+                        <summary>Can you improve an existing website?</summary>
+                        <p>Yes. The first step is reviewing the current site, its platform, content, performance, and customer journey to decide whether an improvement or rebuild is more practical.</p>
+                    </details>
+                    <details>
+                        <summary>What if I need something outside the listed packages?</summary>
+                        <p>Select “Custom project” and describe the required pages, integrations, content, or campaign. A tailored scope can combine the relevant services.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-wrap">
+            <p>© 2026 RO Creative. Crafted with passion in Ireland.</p>
+            <div class="footer-links">
+                <a href="services.html">Services</a>
+                <a href="portfolio.html">Portfolio</a>
+                <a href="pricing.html">Pricing</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </footer>
+    <script src="page-effects.js"></script>
+</body>
+</html>

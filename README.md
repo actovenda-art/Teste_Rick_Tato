@@ -14,7 +14,13 @@ Depois, acesse `http://localhost:8000`.
 
 ## Estrutura
 
-- `index.html`: página principal, estilos e interações.
+- `index.html`: Home com um resumo de todos os temas.
+- `services.html`: detalhamento dos serviços e do processo de trabalho.
+- `portfolio.html`: estudos de caso e resultados dos projetos.
+- `pricing.html`: pacotes, comparação e perguntas frequentes.
+- `contact.html`: briefing detalhado, contatos e próximos passos.
+- `page-styles.css`: estilos compartilhados pelas páginas internas.
+- `page-effects.js`: efeitos de rolagem e interações compartilhadas.
 - `assets/`: imagens ilustrativas utilizadas no portfólio.
 - `.gitignore`: arquivos locais que não devem ser versionados.
 
