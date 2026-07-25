@@ -58,7 +58,18 @@
 
     const activeViewTransition = document.activeViewTransition;
     if (activeViewTransition && !reducedMotion.matches) {
-        activeViewTransition.finished.then(startIndicator, startIndicator);
+        try {
+            sessionStorage.removeItem(previousPageKey);
+        } catch {
+            // The active item still renders correctly without transient storage.
+        }
+
+        moveIndicator(activeLink, false);
+        navList.classList.add('indicator-ready');
+
+        if (document.fonts?.status === 'loading') {
+            document.fonts.ready.then(() => moveIndicator(activeLink, false));
+        }
     } else {
         startIndicator();
     }

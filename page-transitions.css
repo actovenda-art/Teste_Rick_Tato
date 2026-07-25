@@ -6,6 +6,10 @@ header {
     view-transition-name: site-header;
 }
 
+.nav-indicator {
+    view-transition-name: active-nav-indicator;
+}
+
 main {
     position: relative;
     z-index: 1;
@@ -25,6 +29,18 @@ main {
 ::view-transition-new(site-header) {
     animation: none;
     opacity: 0;
+}
+
+::view-transition-group(active-nav-indicator) {
+    z-index: 1001;
+    animation-duration: 360ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(active-nav-indicator),
+::view-transition-new(active-nav-indicator) {
+    animation: none;
+    mix-blend-mode: normal;
 }
 
 ::view-transition-group(page-content) {
