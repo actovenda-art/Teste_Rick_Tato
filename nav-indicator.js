@@ -3,7 +3,7 @@
     const indicator = navList?.querySelector('.nav-indicator');
     const activeLink = navList?.querySelector('a[aria-current="page"]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let navigationTimer;
+    const previousPageKey = 'ro-creative-nav-previous-page';
 
     if (!navList || !indicator || !activeLink) return;
 
@@ -21,8 +21,27 @@
     }
 
     function initializeIndicator() {
-        moveIndicator(activeLink, false);
+        let previousPath = null;
+        try {
+            previousPath = sessionStorage.getItem(previousPageKey);
+            sessionStorage.removeItem(previousPageKey);
+        } catch {
+            previousPath = null;
+        }
+
+        const previousLink = [...navList.querySelectorAll('a')].find(link => {
+            return new URL(link.href, window.location.href).pathname === previousPath;
+        });
+
+        const shouldSlide = previousLink && previousLink !== activeLink && !reducedMotion.matches && window.innerWidth > 768;
+        moveIndicator(shouldSlide ? previousLink : activeLink, false);
         navList.classList.add('indicator-ready');
+
+        if (shouldSlide) {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => moveIndicator(activeLink));
+            });
+        }
     }
 
     const fontsReady = document.fonts?.ready ?? Promise.resolve();
@@ -39,12 +58,11 @@
                 return;
             }
 
-            event.preventDefault();
-            clearTimeout(navigationTimer);
-            moveIndicator(link);
-            navigationTimer = window.setTimeout(() => {
-                window.location.assign(destination.href);
-            }, 360);
+            try {
+                sessionStorage.setItem(previousPageKey, new URL(activeLink.href, window.location.href).pathname);
+            } catch {
+                // Navigation remains immediate when transient storage is unavailable.
+            }
         });
     });
 

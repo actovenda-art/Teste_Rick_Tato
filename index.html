@@ -20,10 +20,6 @@
         body > section, body > footer { position: relative; z-index: 1; }
         footer { background: rgba(10,10,10,0.72); backdrop-filter: blur(8px); }
 
-        /* Scroll reveals */
-        .reveal-on-scroll { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease var(--reveal-delay, 0ms), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms); }
-        .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
-        
         /* Header */
         header { padding: 20px 0; position: fixed; width: 100%; top: 0; background: rgba(10,10,10,0.86); backdrop-filter: blur(14px); z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.09); }
         .nav { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 24px; line-height: 1.65; }
@@ -150,7 +146,6 @@
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             .scroll-bg-layer, .scroll-bg-layer.active { transition: none; transform: none; }
-            .reveal-on-scroll, .reveal-on-scroll.is-visible { opacity: 1; transform: none; transition: none; }
         }
 
         @media (max-width: 360px) {
@@ -536,30 +531,6 @@
 
         function requestScrollUpdate() {
             if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScrollBackground);
-        }
-
-        const revealElements = document.querySelectorAll(
-            '.section-header, .stat-item, .service-card, .portfolio-item, .pricing-card, .contact-info, .contact-form'
-        );
-
-        revealElements.forEach((element, index) => {
-            element.classList.add('reveal-on-scroll');
-            element.style.setProperty('--reveal-delay', `${(index % 3) * 90}ms`);
-        });
-
-        if ('IntersectionObserver' in window && !prefersReducedMotion.matches) {
-            const revealObserver = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        revealObserver.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-
-            revealElements.forEach(element => revealObserver.observe(element));
-        } else {
-            revealElements.forEach(element => element.classList.add('is-visible'));
         }
 
         window.addEventListener('scroll', requestScrollUpdate, { passive: true });

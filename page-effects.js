@@ -41,30 +41,6 @@ function requestScrollUpdate() {
     if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScrollBackground);
 }
 
-const revealElements = document.querySelectorAll(
-    '.section-heading, .detail-card, .step-card, .case-study, .pricing-detail, .comparison-wrap, .faq-list details, .contact-panel, .contact-form, .info-panel'
-);
-
-revealElements.forEach((element, index) => {
-    element.classList.add('reveal-on-scroll');
-    element.style.setProperty('--reveal-delay', `${(index % 3) * 90}ms`);
-});
-
-if ('IntersectionObserver' in window && !prefersReducedMotion.matches) {
-    const revealObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                revealObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1, rootMargin: '0px 0px -8% 0px' });
-
-    revealElements.forEach(element => revealObserver.observe(element));
-} else {
-    revealElements.forEach(element => element.classList.add('is-visible'));
-}
-
 document.querySelectorAll('[data-demo-form]').forEach(form => {
     form.addEventListener('submit', event => {
         event.preventDefault();

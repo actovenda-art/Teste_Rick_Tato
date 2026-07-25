@@ -149,9 +149,6 @@ img { max-width: 100%; }
 .footer-links a { text-decoration: none; }
 .footer-links a:hover { color: #fff; }
 
-.reveal-on-scroll { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease var(--reveal-delay, 0ms), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms); }
-.reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
-
 @media (max-width: 900px) {
     .site-nav { gap: 16px; }
     .site-nav a { font-size: 13px; }
@@ -192,5 +189,4 @@ img { max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .scroll-bg-layer, .scroll-bg-layer.active { transition: none; transform: none; }
-    .reveal-on-scroll, .reveal-on-scroll.is-visible { opacity: 1; transform: none; transition: none; }
 }
