@@ -815,7 +815,7 @@ img {
 }
 
 .price-card.featured {
-    border-color: rgba(245, 168, 36, 0.34);
+    border-color: transparent;
     box-shadow: 0 22px 60px rgba(245, 168, 36, 0.15);
 }
 
@@ -826,8 +826,9 @@ img {
     min-width: 126px;
     padding: 5px 17px;
     border-radius: 999px;
-    background: rgba(245, 168, 36, 0.58);
+    background: var(--primary);
     color: var(--background);
+    opacity: 1;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -852,7 +853,7 @@ img {
     font-family: "Cormorant Garamond", Georgia, serif;
     font-size: 48px;
     font-weight: 600;
-    font-variant-numeric: tabular-nums lining-nums;
+    letter-spacing: -0.025em;
     line-height: 1;
 }
 
