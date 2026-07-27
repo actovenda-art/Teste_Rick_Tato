@@ -10,10 +10,13 @@
 
         const activeViewTransition = document.activeViewTransition;
         const heroContainer = document.querySelector('.hero > .container, .page-hero-content');
+        const heroTargets = heroContainer ? [...heroContainer.children] : [];
+        let heroAnimation;
 
-        if (heroContainer && !activeViewTransition) {
-            gsapApi.fromTo(
-                [...heroContainer.children],
+        const showHero = () => {
+            heroAnimation?.kill();
+            heroAnimation = gsapApi.fromTo(
+                heroTargets,
                 { autoAlpha: 0, y: 24 },
                 {
                     autoAlpha: 1,
@@ -24,6 +27,31 @@
                     clearProps: 'opacity,visibility,transform'
                 }
             );
+        };
+
+        const hideHero = () => {
+            heroAnimation?.kill();
+            heroAnimation = gsapApi.to(heroTargets, {
+                autoAlpha: 0,
+                y: -18,
+                duration: 0.3,
+                stagger: 0.03,
+                ease: 'power2.in'
+            });
+        };
+
+        if (heroContainer && !activeViewTransition) {
+            showHero();
+        }
+
+        if (heroContainer) {
+            scrollTriggerApi.create({
+                trigger: heroContainer.closest('section'),
+                start: 'top top',
+                end: 'bottom 18%',
+                onLeave: hideHero,
+                onEnterBack: showHero
+            });
         }
 
         document.querySelectorAll('main > section:not(:first-child)').forEach(section => {
@@ -42,11 +70,11 @@
                     duration: 0.78,
                     stagger: 0.1,
                     ease: 'power3.out',
-                    clearProps: 'opacity,visibility,transform',
                     scrollTrigger: {
                         trigger: section,
                         start: 'top 82%',
-                        once: true
+                        end: 'bottom 18%',
+                        toggleActions: 'restart reverse restart reverse'
                     }
                 }
             );
@@ -66,32 +94,51 @@
 
     const iconObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
+            const isVisible = entry.isIntersecting && entry.intersectionRatio >= 0.25;
 
             const icons = entry.target.querySelectorAll(iconSelector);
             if (icons.length) {
-                animate(icons, {
-                    opacity: [0, 1],
-                    scale: [0.78, 1],
-                    rotate: ['-7deg', '0deg'],
-                    delay: stagger(70),
-                    duration: 620,
-                    ease: 'out(3)'
-                });
+                animate(
+                    icons,
+                    isVisible
+                        ? {
+                            opacity: [0, 1],
+                            scale: [0.78, 1],
+                            rotate: ['-7deg', '0deg'],
+                            delay: stagger(70),
+                            duration: 620,
+                            ease: 'out(3)'
+                        }
+                        : {
+                            opacity: 0,
+                            scale: 0.78,
+                            rotate: '-7deg',
+                            duration: 220,
+                            ease: 'in(2)'
+                        }
+                );
             }
 
             const values = entry.target.querySelectorAll('.price, .result strong');
             if (values.length) {
-                animate(values, {
-                    opacity: [0, 1],
-                    scale: [0.84, 1],
-                    delay: stagger(80),
-                    duration: 540,
-                    ease: 'out(4)'
-                });
+                animate(
+                    values,
+                    isVisible
+                        ? {
+                            opacity: [0, 1],
+                            scale: [0.84, 1],
+                            delay: stagger(80),
+                            duration: 540,
+                            ease: 'out(4)'
+                        }
+                        : {
+                            opacity: 0,
+                            scale: 0.84,
+                            duration: 200,
+                            ease: 'in(2)'
+                        }
+                );
             }
-
-            iconObserver.unobserve(entry.target);
         });
     }, { threshold: 0.25 });
 
