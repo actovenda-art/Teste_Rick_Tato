@@ -852,6 +852,7 @@ img {
     font-family: "Cormorant Garamond", Georgia, serif;
     font-size: 48px;
     font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
     line-height: 1;
 }
 

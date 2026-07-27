@@ -88,15 +88,53 @@
 
   const currencyButtons = document.querySelectorAll("[data-currency]");
   const prices = document.querySelectorAll("[data-eur][data-usd]");
+  const priceAnimations = new WeakMap();
+  const currencyFormat = {
+    eur: { symbol: "€", locale: "de-DE" },
+    usd: { symbol: "$", locale: "de-DE" },
+  };
 
-  const animatePrice = (element) => {
-    if (reducedMotion || !window.anime?.animate) return;
-    window.anime.animate(element, {
-      opacity: [0, 1],
-      translateY: [8, 0],
-      duration: 420,
-      easing: "easeOutCubic",
-    });
+  const getNumericPrice = (value) => Number(value.replace(/\D/g, ""));
+
+  const formatPrice = (value, currency) => {
+    const config = currencyFormat[currency];
+    return `${config.symbol}${Math.round(value).toLocaleString(config.locale)}`;
+  };
+
+  const animatePrice = (element, currency) => {
+    const previousAnimation = priceAnimations.get(element);
+    if (previousAnimation) cancelAnimationFrame(previousAnimation);
+
+    const startValue = Number(element.dataset.currentValue || getNumericPrice(element.textContent));
+    const endValue = getNumericPrice(element.dataset[currency]);
+
+    if (reducedMotion || startValue === endValue) {
+      element.textContent = formatPrice(endValue, currency);
+      element.dataset.currentValue = String(endValue);
+      return;
+    }
+
+    const duration = 760;
+    const startedAt = performance.now();
+
+    const updatePrice = (now) => {
+      const progress = Math.min(1, (now - startedAt) / duration);
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      const currentValue = startValue + (endValue - startValue) * easedProgress;
+
+      element.textContent = formatPrice(currentValue, currency);
+      element.dataset.currentValue = String(currentValue);
+
+      if (progress < 1) {
+        priceAnimations.set(element, requestAnimationFrame(updatePrice));
+      } else {
+        element.textContent = formatPrice(endValue, currency);
+        element.dataset.currentValue = String(endValue);
+        priceAnimations.delete(element);
+      }
+    };
+
+    priceAnimations.set(element, requestAnimationFrame(updatePrice));
   };
 
   currencyButtons.forEach((button) => {
@@ -110,10 +148,9 @@
       });
 
       prices.forEach((price) => {
-        price.textContent = price.dataset[currency];
         const note = price.parentElement?.querySelector(".price-note");
         if (note) note.textContent = note.dataset[`${currency}Note`];
-        animatePrice(price);
+        animatePrice(price, currency);
       });
     });
   });
