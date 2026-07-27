@@ -4,7 +4,7 @@ Site estático de portfólio para serviços de web design na Irlanda e na Flóri
 
 ## Executar localmente
 
-Abra `index.html` diretamente no navegador ou inicie um servidor HTTP local:
+Inicie um servidor HTTP local:
 
 ```powershell
 python -m http.server 8000
@@ -14,7 +14,9 @@ Depois, acesse `http://localhost:8000`.
 
 ## Estrutura
 
-- `index.html`: Home com um resumo de todos os temas.
+- `index.html`: experiência principal em uma única página, inspirada no OR Creative Flow.
+- `flow-styles.css`: identidade visual e responsividade da página principal.
+- `flow.js`: menu móvel, comparadores, câmbio e animações com GSAP e Anime.js.
 - `services.html`: detalhamento dos serviços e do processo de trabalho.
 - `portfolio.html`: estudos de caso e resultados dos projetos.
 - `pricing.html`: pacotes, comparação e perguntas frequentes.
@@ -22,17 +24,13 @@ Depois, acesse `http://localhost:8000`.
 - `page-styles.css`: estilos compartilhados pelas páginas internas.
 - `page-transitions.css`: transição entre páginas com cabeçalho estável.
 - `page-effects.js`: efeitos de rolagem e interações compartilhadas.
-- `motion-effects.js`: animações de entrada, rolagem e microinterações com GSAP e Anime.js.
-- `nav-indicator.js`: animação deslizante da página ativa no menu.
-- `favicon.svg`: ícone da marca OR Creative exibido no navegador.
+- `motion-effects.js`: animações das páginas internas com GSAP e Anime.js.
+- `nav-indicator.js`: animação deslizante da página ativa no menu interno.
+- `favicon.svg`: ícone da marca OR Creative.
 - `vercel.json`: configuração de URLs limpas no Vercel.
-- `assets/`: imagens ilustrativas utilizadas no portfólio.
+- `assets/`: imagens locais da página principal e do portfólio.
 - `.gitignore`: arquivos locais que não devem ser versionados.
 
-## Créditos das imagens
+## Publicação
 
-Imagens ilustrativas obtidas no Unsplash:
-
-- [Barbearia](https://unsplash.com/photos/2ba37e788b70)
-- [Restaurante](https://unsplash.com/photos/23c9450c58cd)
-- [Academia](https://unsplash.com/photos/14e5300c3a48)
+O repositório está conectado ao Vercel. Cada push para a branch `main` inicia uma nova publicação.

@@ -1,0 +1,1331 @@
+:root {
+    --background: #060a0e;
+    --foreground: #f6f7f9;
+    --card: #10161e;
+    --border: #1f2733;
+    --muted: #909ead;
+    --primary: #f5a824;
+    --primary-soft: rgba(245, 168, 36, 0.12);
+    --danger: #9f2134;
+    --shell: 1280px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+}
+
+body {
+    min-width: 320px;
+    overflow-x: hidden;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+body.menu-open {
+    overflow: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+.shell {
+    width: min(var(--shell), 100%);
+    margin-inline: auto;
+    padding-inline: 40px;
+}
+
+.site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    height: 80px;
+    background: rgba(6, 10, 14, 0.42);
+    border-bottom: 1px solid transparent;
+    backdrop-filter: blur(0);
+    transition: background 0.45s ease, border-color 0.45s ease, backdrop-filter 0.45s ease;
+}
+
+.site-header.scrolled {
+    background: rgba(6, 10, 14, 0.85);
+    border-color: var(--border);
+    backdrop-filter: blur(18px);
+}
+
+.site-nav {
+    width: min(var(--shell), 100%);
+    height: 80px;
+    margin-inline: auto;
+    padding-inline: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    flex: 0 0 auto;
+}
+
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(245, 168, 36, 0.72);
+    border-radius: 50%;
+    color: var(--primary);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.brand-name {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 19px;
+    font-weight: 600;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 38px;
+}
+
+.nav-menu > a:not(.nav-cta),
+.footer-nav a {
+    color: var(--muted);
+    font-size: 14px;
+    transition: color 0.25s ease;
+}
+
+.nav-menu > a:not(.nav-cta):hover,
+.footer-nav a:hover {
+    color: var(--foreground);
+}
+
+.nav-cta {
+    margin-left: 1px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: var(--primary);
+    color: var(--background);
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 35px -10px rgba(245, 168, 36, 0.7);
+}
+
+.menu-toggle {
+    display: none;
+    width: 42px;
+    height: 42px;
+    padding: 10px;
+    border: 0;
+    background: transparent;
+    color: var(--foreground);
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 20px;
+    height: 1px;
+    margin: 5px auto;
+    background: currentColor;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.hero {
+    min-height: 774px;
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+}
+
+.hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.hero-media img {
+    width: 110%;
+    height: 120%;
+    margin: -7% 0 0 -4%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.46;
+    filter: saturate(0.82) contrast(1.08);
+}
+
+.hero-overlay-side,
+.hero-overlay-vertical {
+    position: absolute;
+    inset: 0;
+}
+
+.hero-overlay-side {
+    background: linear-gradient(90deg, var(--background), rgba(6, 10, 14, 0.55), rgba(6, 10, 14, 0.3));
+}
+
+.hero-overlay-vertical {
+    background: linear-gradient(0deg, var(--background), transparent 48%, rgba(6, 10, 14, 0.6));
+}
+
+.conversion-ray {
+    position: absolute;
+    z-index: 1;
+    top: 49.4%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    opacity: 0.62;
+    background: linear-gradient(90deg, transparent 0%, var(--primary) 40%, rgba(245, 168, 36, 0.9) 50%, transparent 100%);
+    box-shadow: 0 0 18px rgba(245, 168, 36, 0.28);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding-top: 111px;
+    padding-bottom: 78px;
+}
+
+.availability {
+    width: max-content;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border: 1px solid rgba(245, 168, 36, 0.4);
+    border-radius: 999px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.availability svg {
+    width: 14px;
+    height: 14px;
+}
+
+.hero h1,
+.section h2,
+.case-content h3,
+.price-card h3 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+}
+
+.hero h1 {
+    max-width: 1190px;
+    margin-top: 27px;
+    font-size: clamp(54px, 8vw, 112px);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+}
+
+.hero h1 span {
+    display: block;
+    color: var(--primary);
+}
+
+.hero-copy {
+    max-width: 576px;
+    margin-top: 27px;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.62;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-top: 38px;
+}
+
+.button {
+    min-height: 50px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 13px 28px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--foreground);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button svg {
+    width: 17px;
+    height: 17px;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+}
+
+.button-primary {
+    background: var(--primary);
+    color: var(--background);
+}
+
+.button-primary:hover {
+    box-shadow: 0 15px 38px -12px rgba(245, 168, 36, 0.72);
+}
+
+.button-outline {
+    border-color: var(--border);
+}
+
+.button-outline:hover {
+    border-color: rgba(245, 168, 36, 0.52);
+    background: rgba(245, 168, 36, 0.04);
+}
+
+.button-gold {
+    border-color: rgba(245, 168, 36, 0.7);
+    color: var(--primary);
+}
+
+.stats {
+    max-width: 672px;
+    margin-top: 62px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.stats > div {
+    min-height: 60px;
+    padding-left: 16px;
+    border-left: 1px solid var(--border);
+}
+
+.stats strong {
+    display: block;
+    color: var(--primary);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.stats span {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.scroll-cue {
+    position: absolute;
+    z-index: 3;
+    bottom: 31px;
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    transform: translateX(-50%);
+}
+
+.scroll-cue span {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+}
+
+.scroll-cue i {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(var(--primary), transparent);
+}
+
+.section {
+    position: relative;
+    padding: 128px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.section-label {
+    display: inline-block;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+}
+
+.section-intro h2,
+.pricing-heading h2 {
+    margin-top: 16px;
+    font-size: clamp(42px, 5vw, 60px);
+    font-weight: 600;
+    line-height: 1;
+}
+
+.section-intro > p,
+.pricing-heading p {
+    margin-top: 18px;
+    color: var(--muted);
+}
+
+.services {
+    min-height: 887px;
+}
+
+.service-grid {
+    margin-top: 86px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.service-card {
+    min-height: 303px;
+    position: relative;
+    overflow: hidden;
+    padding: 40px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--card);
+    transition: border-color 0.45s ease, transform 0.45s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(245, 168, 36, 0.5);
+}
+
+.service-card::after {
+    content: "";
+    position: absolute;
+    right: -70px;
+    bottom: -90px;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background: rgba(245, 168, 36, 0.06);
+    filter: blur(30px);
+}
+
+.icon-box {
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(245, 168, 36, 0.25);
+    border-radius: 15px;
+    background: rgba(245, 168, 36, 0.09);
+    color: var(--primary);
+}
+
+.icon-box svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 1.8;
+}
+
+.service-card h3 {
+    margin-top: 27px;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.service-card p {
+    margin-top: 13px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 19px;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.text-link svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.25s ease;
+}
+
+.text-link:hover svg {
+    transform: translateX(4px);
+}
+
+.work {
+    padding-block: 144px;
+}
+
+.work-intro {
+    max-width: 800px;
+    min-height: 264px;
+}
+
+.work-intro p {
+    font-size: 15px;
+}
+
+.case-study {
+    min-height: 0;
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 64px;
+    align-items: center;
+}
+
+.case-study + .case-study {
+    margin-top: 144px;
+}
+
+.case-study.reverse .comparison-slider {
+    order: 2;
+}
+
+.case-study.reverse .case-content {
+    order: 1;
+}
+
+.comparison-slider {
+    --position: 50%;
+    min-width: 0;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--card);
+    cursor: ew-resize;
+    touch-action: none;
+    outline: none;
+}
+
+.comparison-slider:focus-visible {
+    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
+}
+
+.comparison-slider .after-image,
+.comparison-slider .before-image,
+.comparison-slider .before-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.comparison-slider .after-image {
+    position: absolute;
+    inset: 0;
+}
+
+.comparison-slider .before-image {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    width: 100%;
+    clip-path: inset(0 calc(100% - var(--position)) 0 0);
+    filter: grayscale(1) brightness(0.62);
+}
+
+.comparison-slider .before-image img {
+    width: 100%;
+    max-width: none;
+}
+
+.comparison-line {
+    position: absolute;
+    z-index: 4;
+    top: 0;
+    bottom: 0;
+    left: var(--position);
+    width: 1px;
+    background: var(--primary);
+    box-shadow: 0 0 12px rgba(245, 168, 36, 0.65);
+    transform: translateX(-50%);
+}
+
+.comparison-handle {
+    width: 46px;
+    height: 46px;
+    position: absolute;
+    z-index: 5;
+    top: 50%;
+    left: var(--position);
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--primary);
+    border-radius: 50%;
+    background: var(--card);
+    color: var(--primary);
+    transform: translate(-50%, -50%);
+}
+
+.comparison-handle svg {
+    width: 19px;
+    height: 19px;
+}
+
+.comparison-label {
+    position: absolute;
+    z-index: 3;
+    top: 16px;
+    padding: 5px 13px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.before-label {
+    left: 16px;
+    background: rgba(6, 10, 14, 0.72);
+}
+
+.after-label {
+    right: 16px;
+    background: var(--primary);
+    color: var(--background);
+}
+
+.result-badge {
+    position: absolute;
+    z-index: 3;
+    right: 18px;
+    bottom: 20px;
+    padding: 13px 20px;
+    border: 1px solid rgba(245, 168, 36, 0.3);
+    border-radius: 14px;
+    background: rgba(6, 10, 14, 0.86);
+    color: var(--primary);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.case-content h3 {
+    margin-top: 14px;
+    font-size: 38px;
+    font-weight: 600;
+}
+
+.case-content > p {
+    margin-top: 15px;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.65;
+}
+
+.outcome-grid {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.outcome {
+    min-height: 198px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: rgba(16, 22, 30, 0.52);
+}
+
+.outcome-after {
+    border-color: rgba(245, 168, 36, 0.3);
+    background: rgba(245, 168, 36, 0.035);
+}
+
+.outcome h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.outcome-after h4 {
+    color: var(--primary);
+}
+
+.outcome h4 span {
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(159, 33, 52, 0.18);
+    color: #e54b61;
+}
+
+.outcome-after h4 span {
+    background: rgba(245, 168, 36, 0.12);
+    color: var(--primary);
+}
+
+.outcome ul {
+    margin-top: 13px;
+    list-style: none;
+}
+
+.outcome li {
+    position: relative;
+    margin-top: 8px;
+    padding-left: 20px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.outcome-before li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: rgba(159, 33, 52, 0.82);
+}
+
+.outcome-after li {
+    color: var(--foreground);
+}
+
+.outcome-after li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;
+}
+
+.center .button {
+    min-height: 45.6px;
+    padding-block: 12px;
+}
+
+.pricing-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 48px;
+}
+
+.currency-toggle {
+    display: flex;
+    padding: 5px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--card);
+}
+
+.currency-toggle button {
+    min-width: 80px;
+    padding: 8px 15px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease;
+}
+
+.currency-toggle button.active {
+    background: var(--primary);
+    color: var(--background);
+}
+
+.pricing-grid {
+    margin-top: 67px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+}
+
+.price-card {
+    min-height: 591px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 36px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--card);
+}
+
+.price-card.featured {
+    border-color: rgba(245, 168, 36, 0.34);
+    box-shadow: 0 22px 60px rgba(245, 168, 36, 0.15);
+}
+
+.popular {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    min-width: 126px;
+    padding: 5px 17px;
+    border-radius: 999px;
+    background: rgba(245, 168, 36, 0.58);
+    color: var(--background);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+    transform: translate(-50%, -50%);
+}
+
+.price-card h3 {
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.price-card > p {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.price {
+    margin-top: 27px;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.price-note {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.price-card ul {
+    flex: 1;
+    margin: 28px 0 30px;
+    list-style: none;
+}
+
+.price-card li {
+    position: relative;
+    margin-top: 14px;
+    padding-left: 31px;
+    font-size: 14px;
+}
+
+.price-card li::before {
+    content: "✓";
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(245, 168, 36, 0.11);
+    color: var(--primary);
+    font-size: 12px;
+}
+
+.price-card .button {
+    width: 100%;
+}
+
+.pricing-link {
+    display: flex;
+    width: max-content;
+    margin: 42px auto 0;
+}
+
+.contact {
+    min-height: 1078px;
+}
+
+.contact-intro h2 {
+    font-size: 60px;
+}
+
+.contact-grid {
+    margin-top: 52px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 78px;
+    align-items: start;
+}
+
+.contact-details {
+    display: grid;
+    gap: 20px;
+}
+
+.contact-card {
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--card);
+}
+
+.contact-card .icon-box {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 auto;
+    border-radius: 13px;
+}
+
+.contact-card .icon-box svg {
+    width: 20px;
+    height: 20px;
+}
+
+.contact-card small {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.contact-card strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.contact-details .text-link {
+    margin-top: 5px;
+}
+
+.contact-form {
+    display: grid;
+    gap: 23px;
+    padding: 36px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--card);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.contact-form label {
+    display: grid;
+    gap: 7px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    outline: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.contact-form input,
+.contact-form select {
+    height: 46px;
+    padding: 0 16px;
+}
+
+.contact-form textarea {
+    min-height: 74px;
+    padding: 13px 16px;
+    resize: vertical;
+}
+
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+    border-color: rgba(245, 168, 36, 0.7);
+    box-shadow: 0 0 0 3px rgba(245, 168, 36, 0.08);
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: rgba(144, 158, 173, 0.58);
+}
+
+.submit-button {
+    width: 100%;
+}
+
+.site-footer {
+    padding: 56px 0;
+}
+
+.footer-main {
+    display: flex;
+    justify-content: space-between;
+    gap: 48px;
+}
+
+.footer-main p {
+    max-width: 380px;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.footer-nav {
+    display: flex;
+    align-items: center;
+    gap: 38px;
+}
+
+.footer-bottom {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.footer-bottom div {
+    display: flex;
+    gap: 30px;
+}
+
+@media (max-width: 1000px) {
+    .nav-menu {
+        gap: 24px;
+    }
+
+    .service-grid,
+    .pricing-grid {
+        gap: 18px;
+    }
+
+    .service-card,
+    .price-card {
+        padding: 28px;
+    }
+
+    .case-study {
+        gap: 40px;
+    }
+
+    .comparison-slider {
+        height: 620px;
+    }
+
+    .outcome-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-grid {
+        gap: 40px;
+    }
+}
+
+@media (max-width: 800px) {
+    .shell,
+    .site-nav {
+        padding-inline: 24px;
+    }
+
+    .menu-toggle {
+        display: block;
+        position: relative;
+        z-index: 102;
+    }
+
+    .menu-toggle[aria-expanded="true"] span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+    }
+
+    .menu-toggle[aria-expanded="true"] span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle[aria-expanded="true"] span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+    }
+
+    .nav-menu {
+        position: fixed;
+        inset: 80px 0 auto;
+        display: grid;
+        gap: 0;
+        padding: 22px 24px 30px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(6, 10, 14, 0.98);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-12px);
+        transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
+    }
+
+    .nav-menu.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .nav-menu > a:not(.nav-cta) {
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(31, 39, 51, 0.7);
+        font-size: 16px;
+    }
+
+    .nav-cta {
+        margin: 20px 0 0;
+        text-align: center;
+    }
+
+    .hero {
+        min-height: 867px;
+    }
+
+    .hero-content {
+        padding-top: 112px;
+    }
+
+    .hero h1 {
+        font-size: clamp(48px, 13vw, 72px);
+    }
+
+    .hero-copy {
+        font-size: 16px;
+    }
+
+    .stats {
+        max-width: none;
+        gap: 8px;
+    }
+
+    .stats strong {
+        font-size: 28px;
+    }
+
+    .stats span {
+        font-size: 9px;
+    }
+
+    .scroll-cue {
+        display: none;
+    }
+
+    .section {
+        padding: 96px 0;
+    }
+
+    .service-grid,
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .case-study,
+    .case-study.reverse {
+        min-height: 0;
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .case-study.reverse .comparison-slider,
+    .case-study.reverse .case-content {
+        order: initial;
+    }
+
+    .comparison-slider {
+        height: min(128vw, 640px);
+    }
+
+    .pricing-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-main,
+    .footer-bottom {
+        flex-direction: column;
+    }
+
+    .footer-nav {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 520px) {
+    .shell,
+    .site-nav {
+        padding-inline: 20px;
+    }
+
+    .brand-name {
+        font-size: 17px;
+    }
+
+    .hero {
+        min-height: 820px;
+    }
+
+    .availability {
+        max-width: 100%;
+        font-size: 10px;
+    }
+
+    .hero h1 {
+        font-size: clamp(45px, 13.3vw, 58px);
+    }
+
+    .hero-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .hero-actions .button {
+        width: 100%;
+    }
+
+    .stats {
+        margin-top: 45px;
+    }
+
+    .stats > div {
+        padding-left: 9px;
+    }
+
+    .stats strong {
+        font-size: 24px;
+    }
+
+    .section-intro h2,
+    .pricing-heading h2,
+    .contact-intro h2 {
+        font-size: 42px;
+    }
+
+    .service-card,
+    .price-card,
+    .contact-form {
+        padding: 26px;
+    }
+
+    .case-study {
+        margin-top: 72px;
+    }
+
+    .case-content h3 {
+        font-size: 33px;
+    }
+
+    .outcome-grid,
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .result-badge {
+        right: 12px;
+        bottom: 14px;
+        font-size: 15px;
+    }
+
+    .footer-nav {
+        gap: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
