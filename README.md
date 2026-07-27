@@ -22,6 +22,7 @@ Depois, acesse `http://localhost:8000`.
 - `page-styles.css`: estilos compartilhados pelas páginas internas.
 - `page-transitions.css`: transição entre páginas com cabeçalho estável.
 - `page-effects.js`: efeitos de rolagem e interações compartilhadas.
+- `motion-effects.js`: animações de entrada, rolagem e microinterações com GSAP e Anime.js.
 - `nav-indicator.js`: animação deslizante da página ativa no menu.
 - `favicon.svg`: ícone da marca OR Creative exibido no navegador.
 - `vercel.json`: configuração de URLs limpas no Vercel.
