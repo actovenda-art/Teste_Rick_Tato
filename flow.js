@@ -36,6 +36,10 @@
 
   document.querySelectorAll(".comparison-slider").forEach((slider) => {
     let dragging = false;
+    const preventImageSelection = (event) => event.preventDefault();
+
+    slider.addEventListener("dragstart", preventImageSelection);
+    slider.addEventListener("selectstart", preventImageSelection);
 
     const setPosition = (position) => {
       const safePosition = Math.max(0, Math.min(100, position));
