@@ -217,19 +217,24 @@
       );
     });
 
-    const heroImage = document.querySelector(".hero-media img");
-    if (heroImage) {
-      gsap.to(heroImage, {
-        yPercent: 7,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".hero",
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.7,
+    document.querySelectorAll(".fade-item").forEach((item) => {
+      gsap.fromTo(
+        item,
+        { autoAlpha: 0 },
+        {
+          autoAlpha: 1,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: item,
+            start: "top 91%",
+            end: "bottom 9%",
+            toggleActions: "restart reverse restart reverse",
+          },
         },
-      });
-    }
+      );
+    });
+
   }
 
   document.querySelectorAll(".icon-box").forEach((icon) => {
