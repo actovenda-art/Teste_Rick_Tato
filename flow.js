@@ -159,12 +159,6 @@
     });
   });
 
-  document.querySelector("[data-contact-form]")?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    window.alert("Thank you! Your project brief is ready. We'll be in touch shortly.");
-    event.currentTarget.reset();
-  });
-
   window.lucide?.createIcons?.({
     attrs: {
       "stroke-width": 1.8,

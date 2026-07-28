@@ -41,13 +41,6 @@ function requestScrollUpdate() {
     if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScrollBackground);
 }
 
-document.querySelectorAll('[data-demo-form]').forEach(form => {
-    form.addEventListener('submit', event => {
-        event.preventDefault();
-        alert('Thanks! Your project brief is ready. Form delivery will be connected in the next integration step.');
-    });
-});
-
 const requestedPlan = new URLSearchParams(window.location.search).get('plan');
 const planSelect = document.querySelector('[name="package"]');
 if (requestedPlan && planSelect && [...planSelect.options].some(option => option.value === requestedPlan)) {

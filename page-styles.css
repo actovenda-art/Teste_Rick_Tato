@@ -137,6 +137,11 @@ img { max-width: 100%; }
 .field textarea { min-height: 145px; resize: vertical; }
 .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
 .form-note { color: #777780; font-size: 12px; }
+.form-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.form-status { min-height: 18px; line-height: 1.5; }
+.form-status.is-success { color: #66d39a; }
+.form-status.is-error { color: #ff8a8a; }
+.contact-form button:disabled { cursor: wait; opacity: 0.72; }
 
 .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .info-panel { padding: 30px; border-radius: 20px; }

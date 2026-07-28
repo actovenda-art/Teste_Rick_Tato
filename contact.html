@@ -16,6 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.umd.min.js" defer></script>
     <script src="/motion-effects.js" defer></script>
+    <script src="/form-submission.js" defer></script>
 </head>
 <body>
     <div class="scroll-background" aria-hidden="true">
@@ -91,7 +92,8 @@
                         </div>
                     </aside>
 
-                    <form class="contact-form" data-demo-form>
+                    <form class="contact-form" data-enquiry-form data-form-source="contact">
+                        <input class="form-honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
                         <div class="form-row">
                             <div class="field">
                                 <label for="name">Your name</label>
@@ -112,7 +114,7 @@
                                 <select id="location" name="location" required>
                                     <option value="">Select your location</option>
                                     <option value="ireland">Ireland</option>
-                                    <option value="florida">Florida, USA</option>
+                                    <option value="brazil">Brazil</option>
                                     <option value="other">Other</option>
                                 </select>
                             </div>
@@ -144,7 +146,7 @@
                             <textarea id="project" name="project" placeholder="What does your business do, what is not working today, and what would a successful result look like?" required></textarea>
                         </div>
                         <button class="button button-primary" type="submit">Prepare Project Enquiry</button>
-                        <p class="form-note">This form is currently a front-end project brief. Message delivery will be connected when the form backend is configured.</p>
+                        <p class="form-note form-status" data-form-status role="status" aria-live="polite">Your information will be sent securely to OR Creatives.</p>
                     </form>
                 </div>
             </div>
