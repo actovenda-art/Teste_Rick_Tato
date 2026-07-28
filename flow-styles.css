@@ -215,13 +215,26 @@ img {
 .conversion-ray {
     position: absolute;
     z-index: 1;
-    top: 49.4%;
+    top: 50%;
     left: 0;
     right: 0;
     height: 1px;
-    opacity: 0.62;
+    opacity: 0.6;
     background: linear-gradient(90deg, transparent 0%, var(--primary) 40%, rgba(245, 168, 36, 0.9) 50%, transparent 100%);
-    box-shadow: 0 0 18px rgba(245, 168, 36, 0.28);
+    background-position: 200% 0;
+    background-size: 200% 100%;
+    will-change: background-position;
+    animation: ray-sweep 4s linear infinite;
+}
+
+@keyframes ray-sweep {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
 }
 
 .hero-content {
@@ -1295,6 +1308,11 @@ img {
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
+    }
+
+    .conversion-ray {
+        background-position: 50% 0;
+        animation: none !important;
     }
 
     *,
