@@ -8,6 +8,7 @@
     --primary-soft: rgba(245, 168, 36, 0.12);
     --danger: #9f2134;
     --shell: 1280px;
+    --page-gutter: 24px;
 }
 
 * {
@@ -55,7 +56,7 @@ img {
 .shell {
     width: min(var(--shell), 100%);
     margin-inline: auto;
-    padding-inline: 40px;
+    padding-inline: var(--page-gutter);
 }
 
 .site-header {
@@ -79,10 +80,16 @@ img {
     width: min(var(--shell), 100%);
     height: 80px;
     margin-inline: auto;
-    padding-inline: 40px;
+    padding-inline: var(--page-gutter);
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+@media (min-width: 1024px) {
+    :root {
+        --page-gutter: 40px;
+    }
 }
 
 .brand {
@@ -1088,11 +1095,6 @@ img {
 }
 
 @media (max-width: 800px) {
-    .shell,
-    .site-nav {
-        padding-inline: 24px;
-    }
-
     .menu-toggle {
         display: block;
         position: relative;
@@ -1216,11 +1218,6 @@ img {
 }
 
 @media (max-width: 520px) {
-    .shell,
-    .site-nav {
-        padding-inline: 20px;
-    }
-
     .brand-name {
         font-size: 17px;
     }
