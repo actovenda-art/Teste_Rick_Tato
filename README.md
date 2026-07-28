@@ -26,7 +26,7 @@ Depois, acesse `http://localhost:8000`.
 - `page-effects.js`: efeitos de rolagem e interações compartilhadas.
 - `motion-effects.js`: animações das páginas internas com GSAP e Anime.js.
 - `nav-indicator.js`: animação deslizante da página ativa no menu interno.
-- `favicon.svg`: ícone da marca OR Creative.
+- `favicon.png`: ícone da marca OR Creative.
 - `vercel.json`: configuração de URLs limpas no Vercel.
 - `assets/`: imagens locais da página principal e do portfólio.
 - `.gitignore`: arquivos locais que não devem ser versionados.
