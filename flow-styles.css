@@ -137,11 +137,11 @@ img {
     color: var(--background);
     font-size: 14px;
     font-weight: 600;
+    will-change: transform;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .nav-cta:hover {
-    transform: translateY(-2px);
     box-shadow: 0 14px 35px -10px rgba(245, 168, 36, 0.7);
 }
 
@@ -297,16 +297,13 @@ img {
     font-weight: 600;
     letter-spacing: 0.01em;
     cursor: pointer;
+    will-change: transform;
     transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .button svg {
     width: 17px;
     height: 17px;
-}
-
-.button:hover {
-    transform: translateY(-2px);
 }
 
 .button-primary {

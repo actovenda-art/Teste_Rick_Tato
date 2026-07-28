@@ -237,6 +237,28 @@
 
   }
 
+  const supportsMagneticHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  if (!reducedMotion && supportsMagneticHover) {
+    document.querySelectorAll(".button, .nav-cta").forEach((button) => {
+      button.addEventListener("pointermove", (event) => {
+        const bounds = button.getBoundingClientRect();
+        const offsetX = event.clientX - bounds.left - bounds.width / 2;
+        const offsetY = event.clientY - bounds.top - bounds.height / 2;
+
+        button.style.transform = `translate(${offsetX * 0.25}px, ${offsetY * 0.25}px)`;
+      });
+
+      button.addEventListener("pointerleave", () => {
+        button.style.transform = "translate(0, 0)";
+      });
+
+      button.addEventListener("blur", () => {
+        button.style.transform = "translate(0, 0)";
+      });
+    });
+  }
+
   document.querySelectorAll(".icon-box").forEach((icon) => {
     icon.addEventListener("pointerenter", () => {
       if (reducedMotion || !window.anime?.animate) return;
