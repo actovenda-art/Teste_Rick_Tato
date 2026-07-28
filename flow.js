@@ -194,6 +194,32 @@
       );
     });
 
+    document.querySelectorAll(".reveal-stats").forEach((group) => {
+      const indicators = Array.from(group.children);
+      if (!indicators.length) return;
+
+      gsap.fromTo(
+        indicators,
+        { autoAlpha: 0, y: 34 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.78,
+          stagger: {
+            each: 0.16,
+            from: "start",
+          },
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: group,
+            start: "top 92%",
+            end: "bottom 8%",
+            toggleActions: "restart reverse restart reverse",
+          },
+        },
+      );
+    });
+
     document.querySelectorAll(".reveal-group").forEach((group) => {
       const children = Array.from(group.children);
       if (!children.length) return;
