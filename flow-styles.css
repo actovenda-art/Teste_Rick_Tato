@@ -361,31 +361,6 @@ img {
     text-transform: uppercase;
 }
 
-.scroll-cue {
-    position: absolute;
-    z-index: 3;
-    bottom: 31px;
-    left: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    color: var(--muted);
-    transform: translateX(-50%);
-}
-
-.scroll-cue span {
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-}
-
-.scroll-cue i {
-    width: 1px;
-    height: 40px;
-    background: linear-gradient(var(--primary), transparent);
-}
-
 .section {
     position: relative;
     padding: 128px 0;
@@ -1194,10 +1169,6 @@ img {
 
     .stats span {
         font-size: 9px;
-    }
-
-    .scroll-cue {
-        display: none;
     }
 
     .section {
