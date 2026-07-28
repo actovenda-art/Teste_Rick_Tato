@@ -261,6 +261,31 @@
       );
     });
 
+    document.querySelectorAll(".fade-stagger").forEach((group) => {
+      const items = Array.from(group.children);
+      if (!items.length) return;
+
+      gsap.fromTo(
+        items,
+        { autoAlpha: 0 },
+        {
+          autoAlpha: 1,
+          duration: 0.72,
+          stagger: {
+            each: 0.12,
+            from: "start",
+          },
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: group,
+            start: "top 88%",
+            end: "bottom 12%",
+            toggleActions: "restart reverse restart reverse",
+          },
+        },
+      );
+    });
+
   }
 
   const supportsMagneticHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
