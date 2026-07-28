@@ -1,4 +1,4 @@
-# OR Creative
+# OR Creatives
 
 Site estático de portfólio para serviços de web design na Irlanda e na Flórida.
 
@@ -14,7 +14,7 @@ Depois, acesse `http://localhost:8000`.
 
 ## Estrutura
 
-- `index.html`: experiência principal em uma única página, inspirada no OR Creative Flow.
+- `index.html`: experiência principal em uma única página, inspirada no OR Creatives Flow.
 - `flow-styles.css`: identidade visual e responsividade da página principal.
 - `flow.js`: menu móvel, comparadores, câmbio e animações com GSAP e Anime.js.
 - `services.html`: detalhamento dos serviços e do processo de trabalho.
@@ -26,7 +26,7 @@ Depois, acesse `http://localhost:8000`.
 - `page-effects.js`: efeitos de rolagem e interações compartilhadas.
 - `motion-effects.js`: animações das páginas internas com GSAP e Anime.js.
 - `nav-indicator.js`: animação deslizante da página ativa no menu interno.
-- `favicon.png`: ícone da marca OR Creative.
+- `favicon.png`: ícone da marca OR Creatives.
 - `vercel.json`: configuração de URLs limpas no Vercel.
 - `assets/`: imagens locais da página principal e do portfólio.
 - `.gitignore`: arquivos locais que não devem ser versionados.
