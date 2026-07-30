@@ -103,12 +103,21 @@
     const weightedPolygons = mapPolygons.map((polygon) => {
         const bounds = polygonBounds(polygon);
         const weight = (bounds.right - bounds.left) * (bounds.bottom - bounds.top);
-        return { polygon, bounds, weight };
+        const edges = polygon.map((point, index) => {
+            const nextPoint = polygon[(index + 1) % polygon.length];
+            return {
+                start: point,
+                end: nextPoint,
+                length: Math.hypot(nextPoint[0] - point[0], nextPoint[1] - point[1]),
+            };
+        });
+        const perimeter = edges.reduce((sum, edge) => sum + edge.length, 0);
+        return { polygon, bounds, edges, perimeter, weight };
     });
 
     const totalPolygonWeight = weightedPolygons.reduce((sum, item) => sum + item.weight, 0);
 
-    const createMapPoint = () => {
+    const selectWeightedPolygon = () => {
         let selection = Math.random() * totalPolygonWeight;
         let selected = weightedPolygons[0];
 
@@ -120,10 +129,50 @@
             }
         }
 
+        return selected;
+    };
+
+    const createOutlinePoint = (selected) => {
+        let edgeSelection = Math.random() * selected.perimeter;
+        let selectedEdge = selected.edges[0];
+
+        for (const edge of selected.edges) {
+            edgeSelection -= edge.length;
+            if (edgeSelection <= 0) {
+                selectedEdge = edge;
+                break;
+            }
+        }
+
+        const progress = Math.random();
+        const edgeX = selectedEdge.end[0] - selectedEdge.start[0];
+        const edgeY = selectedEdge.end[1] - selectedEdge.start[1];
+        const edgeLength = selectedEdge.length || 0.0001;
+        const jitter = randomBetween(-0.006, 0.006);
+
+        return {
+            x: clamp(
+                selectedEdge.start[0] + edgeX * progress - (edgeY / edgeLength) * jitter,
+            ),
+            y: clamp(
+                selectedEdge.start[1] + edgeY * progress + (edgeX / edgeLength) * jitter,
+            ),
+            outline: true,
+        };
+    };
+
+    const createMapPoint = () => {
+        const selected = selectWeightedPolygon();
+
+        if (Math.random() < 0.68) {
+            return createOutlinePoint(selected);
+        }
+
         for (let attempt = 0; attempt < 50; attempt += 1) {
             const point = {
                 x: randomBetween(selected.bounds.left, selected.bounds.right),
                 y: randomBetween(selected.bounds.top, selected.bounds.bottom),
+                outline: false,
             };
 
             if (pointInPolygon(point, selected.polygon)) return point;
@@ -132,6 +181,7 @@
         return {
             x: (selected.bounds.left + selected.bounds.right) / 2,
             y: (selected.bounds.top + selected.bounds.bottom) / 2,
+            outline: false,
         };
     };
 
@@ -155,12 +205,15 @@
                 position,
                 mapX: mapPoint.x,
                 mapY: mapPoint.y,
+                outline: mapPoint.outline,
                 offsetX: randomBetween(-42, 42),
                 offsetY: randomBetween(-20, 20),
                 scatterX: randomBetween(-190, 190),
                 scatterY: randomBetween(-150, 150),
                 phase: randomBetween(0, Math.PI * 2),
-                size: randomBetween(0.45, 1.7),
+                size: mapPoint.outline
+                    ? randomBetween(0.7, 1.85)
+                    : randomBetween(0.4, 1.45),
                 warmth: Math.random(),
             };
         });
@@ -321,9 +374,11 @@
             particle.y += particle.velocityY * elapsed;
 
             const pulse = 0.58 + Math.sin(time * 1.8 + particle.phase) * 0.2;
+            const contourEmphasis = 1 + mapReveal * (particle.outline ? 0.68 : -0.2);
             const alpha =
                 Math.max(0.12, pulse) *
                 (0.42 + particle.size * 0.2) *
+                contourEmphasis *
                 fieldOpacity;
             const red = particle.warmth > 0.8 ? 245 : 132;
             const green = particle.warmth > 0.8 ? 168 : 126;
@@ -331,7 +386,13 @@
 
             context.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
             context.beginPath();
-            context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            context.arc(
+                particle.x,
+                particle.y,
+                particle.size * (1 + mapReveal * (particle.outline ? 0.22 : 0)),
+                0,
+                Math.PI * 2,
+            );
             context.fill();
         });
 
