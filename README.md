@@ -1,6 +1,6 @@
 # OR Creatives
 
-Site estático de portfólio para serviços de web design na Irlanda e na Flórida.
+Site estático de portfólio para serviços de web design na Irlanda e nos Estados Unidos.
 
 ## Executar localmente
 
