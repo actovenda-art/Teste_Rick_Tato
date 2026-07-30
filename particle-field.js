@@ -3,17 +3,25 @@
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const mapSection = document.querySelector('[data-particle-map]');
+    const mapVisual = document.querySelector('[data-particle-map-visual]');
 
-    if (reducedMotion || !finePointer) return;
+    if (reducedMotion) {
+        mapSection?.classList.add('is-static');
+        return;
+    }
 
     const canvas = document.createElement('canvas');
     canvas.className = 'particle-field';
     canvas.setAttribute('aria-hidden', 'true');
     document.body.prepend(canvas);
+    document.documentElement.classList.add('particle-field-ready');
 
     const context = canvas.getContext('2d', { alpha: true });
     if (!context) {
         canvas.remove();
+        document.documentElement.classList.remove('particle-field-ready');
+        mapSection?.classList.add('is-static');
         return;
     }
 
@@ -26,6 +34,16 @@
         active: false,
     };
 
+    const mapPolygons = [
+        [[0.03, 0.30], [0.10, 0.16], [0.23, 0.12], [0.34, 0.22], [0.30, 0.35], [0.23, 0.43], [0.18, 0.52], [0.11, 0.45], [0.05, 0.48], [0.01, 0.37]],
+        [[0.20, 0.49], [0.29, 0.46], [0.36, 0.55], [0.34, 0.67], [0.30, 0.79], [0.26, 0.91], [0.22, 0.83], [0.19, 0.65]],
+        [[0.43, 0.24], [0.47, 0.17], [0.54, 0.18], [0.58, 0.25], [0.54, 0.32], [0.48, 0.30], [0.44, 0.36], [0.41, 0.29]],
+        [[0.43, 0.37], [0.54, 0.34], [0.60, 0.45], [0.56, 0.65], [0.50, 0.82], [0.44, 0.70], [0.40, 0.50]],
+        [[0.53, 0.20], [0.64, 0.11], [0.80, 0.14], [0.94, 0.25], [0.98, 0.39], [0.88, 0.50], [0.76, 0.45], [0.69, 0.58], [0.60, 0.47], [0.55, 0.34]],
+        [[0.76, 0.66], [0.86, 0.62], [0.94, 0.70], [0.91, 0.82], [0.81, 0.86], [0.74, 0.76]],
+        [[0.35, 0.08], [0.41, 0.03], [0.46, 0.08], [0.43, 0.17], [0.37, 0.18], [0.33, 0.13]],
+    ];
+
     let width = window.innerWidth;
     let height = window.innerHeight;
     let pixelRatio = 1;
@@ -33,16 +51,101 @@
     let animationFrame = 0;
     let lastTime = performance.now();
     let pageProgress = 0;
+    let mapReveal = mapSection ? 0 : 1;
+    let ribbonProgress = mapSection ? 0 : 1;
+    let fieldOpacity = mapSection ? 0 : 1;
+    let mapBounds = {
+        left: width * 0.26,
+        top: height * 0.18,
+        width: width * 0.68,
+        height: height * 0.64,
+    };
 
-    const randomBetween = (min, max) => min + Math.random() * (max - min);
+    const clamp = (value, minimum = 0, maximum = 1) =>
+        Math.max(minimum, Math.min(maximum, value));
+
+    const randomBetween = (minimum, maximum) =>
+        minimum + Math.random() * (maximum - minimum);
+
+    const pointInPolygon = (point, polygon) => {
+        let inside = false;
+
+        for (let current = 0, previous = polygon.length - 1; current < polygon.length; previous = current++) {
+            const currentX = polygon[current][0];
+            const currentY = polygon[current][1];
+            const previousX = polygon[previous][0];
+            const previousY = polygon[previous][1];
+            const intersects =
+                currentY > point.y !== previousY > point.y &&
+                point.x <
+                    ((previousX - currentX) * (point.y - currentY)) /
+                        (previousY - currentY || 0.0001) +
+                        currentX;
+
+            if (intersects) inside = !inside;
+        }
+
+        return inside;
+    };
+
+    const polygonBounds = (polygon) => {
+        const horizontal = polygon.map((point) => point[0]);
+        const vertical = polygon.map((point) => point[1]);
+
+        return {
+            left: Math.min(...horizontal),
+            right: Math.max(...horizontal),
+            top: Math.min(...vertical),
+            bottom: Math.max(...vertical),
+        };
+    };
+
+    const weightedPolygons = mapPolygons.map((polygon) => {
+        const bounds = polygonBounds(polygon);
+        const weight = (bounds.right - bounds.left) * (bounds.bottom - bounds.top);
+        return { polygon, bounds, weight };
+    });
+
+    const totalPolygonWeight = weightedPolygons.reduce((sum, item) => sum + item.weight, 0);
+
+    const createMapPoint = () => {
+        let selection = Math.random() * totalPolygonWeight;
+        let selected = weightedPolygons[0];
+
+        for (const item of weightedPolygons) {
+            selection -= item.weight;
+            if (selection <= 0) {
+                selected = item;
+                break;
+            }
+        }
+
+        for (let attempt = 0; attempt < 50; attempt += 1) {
+            const point = {
+                x: randomBetween(selected.bounds.left, selected.bounds.right),
+                y: randomBetween(selected.bounds.top, selected.bounds.bottom),
+            };
+
+            if (pointInPolygon(point, selected.polygon)) return point;
+        }
+
+        return {
+            x: (selected.bounds.left + selected.bounds.right) / 2,
+            y: (selected.bounds.top + selected.bounds.bottom) / 2,
+        };
+    };
 
     const createParticles = () => {
-        const count = Math.max(260, Math.min(680, Math.round((width * height) / 2200)));
+        const divisor = finePointer ? 1900 : 2700;
+        const minimum = finePointer ? 340 : 240;
+        const maximum = finePointer ? 820 : 480;
+        const count = Math.max(minimum, Math.min(maximum, Math.round((width * height) / divisor)));
 
         particles = Array.from({ length: count }, (_, index) => {
             const position = index / Math.max(1, count - 1);
-            const x = width * 0.8 + randomBetween(-70, 70);
-            const y = height * (0.08 + position * 0.84) + randomBetween(-28, 28);
+            const mapPoint = createMapPoint();
+            const x = mapBounds.left + mapPoint.x * mapBounds.width + randomBetween(-90, 90);
+            const y = mapBounds.top + mapPoint.y * mapBounds.height + randomBetween(-70, 70);
 
             return {
                 x,
@@ -50,13 +153,51 @@
                 velocityX: 0,
                 velocityY: 0,
                 position,
+                mapX: mapPoint.x,
+                mapY: mapPoint.y,
                 offsetX: randomBetween(-42, 42),
                 offsetY: randomBetween(-20, 20),
+                scatterX: randomBetween(-190, 190),
+                scatterY: randomBetween(-150, 150),
                 phase: randomBetween(0, Math.PI * 2),
-                size: randomBetween(0.45, 1.65),
+                size: randomBetween(0.45, 1.7),
                 warmth: Math.random(),
             };
         });
+    };
+
+    const updateMapBounds = () => {
+        if (!mapVisual) return;
+
+        const bounds = mapVisual.getBoundingClientRect();
+        mapBounds = {
+            left: bounds.left,
+            top: bounds.top + bounds.height * 0.04,
+            width: bounds.width,
+            height: bounds.height * 0.9,
+        };
+    };
+
+    const updatePageState = () => {
+        const scrollRange = Math.max(1, document.documentElement.scrollHeight - height);
+        pageProgress = window.scrollY / scrollRange;
+
+        if (!mapSection) {
+            mapReveal = 0;
+            ribbonProgress = 1;
+            fieldOpacity = 1;
+            return;
+        }
+
+        const sectionBounds = mapSection.getBoundingClientRect();
+        const entering = clamp((height * 0.96 - sectionBounds.top) / (height * 0.5));
+        const leaving = clamp((height * 0.58 - sectionBounds.bottom) / (height * 0.54));
+
+        mapReveal = entering * (1 - leaving);
+        ribbonProgress = leaving;
+        fieldOpacity = clamp(Math.max(mapReveal, ribbonProgress));
+        mapSection.classList.toggle('is-active', mapReveal > 0.6 && ribbonProgress < 0.24);
+        updateMapBounds();
     };
 
     const resize = () => {
@@ -68,15 +209,13 @@
         canvas.style.width = `${width}px`;
         canvas.style.height = `${height}px`;
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        updateMapBounds();
         createParticles();
-    };
-
-    const updatePageProgress = () => {
-        const scrollRange = Math.max(1, document.documentElement.scrollHeight - height);
-        pageProgress = window.scrollY / scrollRange;
+        updatePageState();
     };
 
     const movePointer = (event) => {
+        if (!finePointer) return;
         pointer.targetX = event.clientX;
         pointer.targetY = event.clientY;
         pointer.active = true;
@@ -87,7 +226,7 @@
     };
 
     const drawPointerGlow = () => {
-        if (pointer.strength < 0.01) return;
+        if (pointer.strength < 0.01 || fieldOpacity < 0.01) return;
 
         const radius = 118 + pointer.strength * 32;
         const glow = context.createRadialGradient(
@@ -127,26 +266,39 @@
         const ribbonTilt = Math.sin(pageProgress * Math.PI * 5) * 84;
         const interactionRadius = Math.min(168, Math.max(120, width * 0.105));
         const ringRadius = 76 + Math.sin(time * 1.4) * 8;
+        const easedRibbon = ribbonProgress * ribbonProgress * (3 - 2 * ribbonProgress);
+        const gathering = clamp(mapReveal * 1.35);
 
         particles.forEach((particle) => {
             const verticalPosition = height * (0.06 + particle.position * 0.88);
             const curve =
                 Math.sin(particle.position * Math.PI * 4.2 + time * 0.42 + pageProgress * 8) * 38 +
                 Math.sin(particle.position * Math.PI * 9 + particle.phase) * 12;
-            const targetX =
+            const ribbonX =
                 ribbonCenter +
                 curve +
                 particle.offsetX +
                 (particle.position - 0.5) * ribbonTilt;
-            const targetY =
+            const ribbonY =
                 verticalPosition +
                 particle.offsetY +
                 Math.sin(time * 0.7 + particle.phase) * 5;
+            const scatter = 1 - gathering;
+            const mapX =
+                mapBounds.left +
+                particle.mapX * mapBounds.width +
+                particle.scatterX * scatter;
+            const mapY =
+                mapBounds.top +
+                particle.mapY * mapBounds.height +
+                particle.scatterY * scatter;
+            const targetX = mapX + (ribbonX - mapX) * easedRibbon;
+            const targetY = mapY + (ribbonY - mapY) * easedRibbon;
 
-            particle.velocityX += (targetX - particle.x) * 0.012 * elapsed;
-            particle.velocityY += (targetY - particle.y) * 0.012 * elapsed;
+            particle.velocityX += (targetX - particle.x) * 0.014 * elapsed;
+            particle.velocityY += (targetY - particle.y) * 0.014 * elapsed;
 
-            if (pointer.strength > 0.01) {
+            if (pointer.strength > 0.01 && finePointer) {
                 const distanceX = particle.x - pointer.x;
                 const distanceY = particle.y - pointer.y;
                 const distance = Math.hypot(distanceX, distanceY) || 0.001;
@@ -169,10 +321,13 @@
             particle.y += particle.velocityY * elapsed;
 
             const pulse = 0.58 + Math.sin(time * 1.8 + particle.phase) * 0.2;
-            const alpha = Math.max(0.12, pulse) * (0.42 + particle.size * 0.2);
-            const red = particle.warmth > 0.78 ? 245 : 132;
-            const green = particle.warmth > 0.78 ? 168 : 126;
-            const blue = particle.warmth > 0.78 ? 36 : 255;
+            const alpha =
+                Math.max(0.12, pulse) *
+                (0.42 + particle.size * 0.2) *
+                fieldOpacity;
+            const red = particle.warmth > 0.8 ? 245 : 132;
+            const green = particle.warmth > 0.8 ? 168 : 126;
+            const blue = particle.warmth > 0.8 ? 36 : 255;
 
             context.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
             context.beginPath();
@@ -186,10 +341,14 @@
     };
 
     window.addEventListener('resize', resize);
-    window.addEventListener('scroll', updatePageProgress, { passive: true });
-    window.addEventListener('pointermove', movePointer, { passive: true });
-    document.documentElement.addEventListener('pointerleave', releasePointer);
-    window.addEventListener('blur', releasePointer);
+    window.addEventListener('scroll', updatePageState, { passive: true });
+
+    if (finePointer) {
+        window.addEventListener('pointermove', movePointer, { passive: true });
+        document.documentElement.addEventListener('pointerleave', releasePointer);
+        window.addEventListener('blur', releasePointer);
+    }
+
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
             cancelAnimationFrame(animationFrame);
@@ -200,6 +359,5 @@
     });
 
     resize();
-    updatePageProgress();
     animationFrame = requestAnimationFrame(render);
 })();

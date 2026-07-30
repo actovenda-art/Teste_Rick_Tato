@@ -26,7 +26,7 @@ img { max-width: 100%; }
 
 .site-header { position: fixed; inset: 0 0 auto; z-index: 100; padding: 20px 0; background: rgba(10,10,10,0.86); border-bottom: 1px solid var(--border); backdrop-filter: blur(14px); }
 
-@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+@media (prefers-reduced-motion: reduce) {
     .particle-field { display: none; }
 }
 .site-nav-wrap { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
