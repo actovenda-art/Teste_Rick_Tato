@@ -1181,10 +1181,6 @@ img {
     font-weight: 500;
 }
 
-.contact-details .text-link {
-    margin-top: 5px;
-}
-
 .contact-form {
     display: grid;
     gap: 23px;
