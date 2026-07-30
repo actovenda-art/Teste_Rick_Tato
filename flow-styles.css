@@ -1228,8 +1228,50 @@ img {
 
 .contact-form input,
 .contact-form select {
-    height: 46px;
+    height: 50px;
     padding: 0 16px;
+}
+
+.contact-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 54px;
+    border-color: rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+    background:
+        linear-gradient(45deg, transparent 50%, var(--primary) 50%) calc(100% - 21px) calc(50% - 2px) / 6px 6px no-repeat,
+        linear-gradient(135deg, var(--primary) 50%, transparent 50%) calc(100% - 15px) calc(50% - 2px) / 6px 6px no-repeat,
+        linear-gradient(90deg, transparent, rgba(245, 168, 36, 0.09)) 100% 0 / 48px 100% no-repeat,
+        #090e14;
+    color-scheme: dark;
+    cursor: pointer;
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background-color 0.25s ease;
+}
+
+.contact-form select:hover {
+    border-color: rgba(245, 168, 36, 0.42);
+    background-color: #0d131b;
+}
+
+.contact-form select:required:invalid {
+    color: #7f8a98;
+}
+
+.contact-form select option {
+    background: #0d131b;
+    color: #f8f9fb;
+}
+
+.contact-form select option:disabled {
+    color: #7f8a98;
+}
+
+.contact-form select option:checked {
+    background: #8b6119;
+    color: #ffffff;
 }
 
 .contact-form textarea {
@@ -1242,7 +1284,9 @@ img {
 .contact-form select:focus,
 .contact-form textarea:focus {
     border-color: rgba(245, 168, 36, 0.7);
-    box-shadow: 0 0 0 3px rgba(245, 168, 36, 0.08);
+    box-shadow:
+        0 0 0 3px rgba(245, 168, 36, 0.09),
+        0 12px 28px rgba(0, 0, 0, 0.2);
 }
 
 .contact-form input::placeholder,
