@@ -749,7 +749,7 @@ img {
 
 .comparison-slider {
     --position: 50%;
-    width: min(100%, 470px);
+    width: min(100%, 400px);
     min-width: 0;
     height: auto;
     aspect-ratio: 4 / 5;
@@ -1347,7 +1347,7 @@ img {
     }
 
     .comparison-slider {
-        width: min(100%, 430px);
+        width: min(100%, 370px);
         height: auto;
     }
 
@@ -1486,7 +1486,7 @@ img {
     }
 
     .comparison-slider {
-        width: min(100%, 420px);
+        width: min(100%, 340px);
         height: auto;
     }
 
