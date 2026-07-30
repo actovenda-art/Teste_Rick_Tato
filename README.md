@@ -27,6 +27,7 @@ Depois, acesse `http://localhost:8000`.
 - `motion-effects.js`: animações das páginas internas com GSAP e Anime.js.
 - `nav-indicator.js`: animação deslizante da página ativa no menu interno.
 - `form-submission.js`: envio seguro dos formulários para o Supabase.
+- `particle-field.js`: campo de partículas interativo inspirado na referência visual.
 - `supabase/migrations/`: estrutura versionada do banco de dados.
 - `favicon.png`: ícone da marca OR Creatives.
 - `vercel.json`: configuração de URLs limpas no Vercel.

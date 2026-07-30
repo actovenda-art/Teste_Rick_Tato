@@ -18,12 +18,17 @@ img { max-width: 100%; }
 .narrow { width: min(820px, calc(100% - 48px)); margin: 0 auto; }
 
 .scroll-background { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: var(--bg); }
+.particle-field { position: fixed; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; opacity: 0.68; mix-blend-mode: screen; }
 .scroll-background::after { content: ''; position: absolute; inset: 0; z-index: 2; background: radial-gradient(circle at 50% 30%, rgba(10,10,10,0.46), rgba(10,10,10,0.92) 78%), linear-gradient(180deg, rgba(10,10,10,0.7), rgba(10,10,10,0.9)); }
 .scroll-bg-layer { position: absolute; inset: -5%; opacity: 0; background-position: center calc(50% + var(--parallax-offset, 0px)); background-size: cover; filter: saturate(0.72) contrast(1.08); transform: scale(1.1); transition: opacity 0.9s ease, transform 1.4s ease; will-change: opacity, transform, background-position; }
 .scroll-bg-layer.active { opacity: 0.46; transform: scale(1.04); }
-.site-header, main, .site-footer { position: relative; z-index: 1; }
+.site-header, main, .site-footer { position: relative; z-index: 2; }
 
 .site-header { position: fixed; inset: 0 0 auto; z-index: 100; padding: 20px 0; background: rgba(10,10,10,0.86); border-bottom: 1px solid var(--border); backdrop-filter: blur(14px); }
+
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+    .particle-field { display: none; }
+}
 .site-nav-wrap { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand { font-size: 23px; font-weight: 800; text-decoration: none; letter-spacing: -0.04em; background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .site-nav { position: relative; display: flex; align-items: center; gap: 28px; list-style: none; }
