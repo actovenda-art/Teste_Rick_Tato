@@ -1,7 +1,9 @@
 (() => {
     'use strict';
 
-    const selects = document.querySelectorAll('.contact-form select[name="location"]');
+    const selects = document.querySelectorAll(
+        '.contact-form select[name="location"], .contact-form select[name="package"]',
+    );
     if (!selects.length) return;
 
     let openSelect = null;
