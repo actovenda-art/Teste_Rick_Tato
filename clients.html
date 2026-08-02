@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive previews of websites currently being developed for OR Creatives clients.">
+    <title>Clients | OR Creatives</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/page-styles.css">
+    <link rel="stylesheet" href="/clients.css">
+    <link rel="stylesheet" href="/page-transitions.css">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.umd.min.js" defer></script>
+    <script src="/particle-field.js" defer></script>
+    <script src="/motion-effects.js" defer></script>
+    <script src="/clients.js" defer></script>
+</head>
+<body>
+    <div class="scroll-background" aria-hidden="true">
+        <div class="scroll-bg-layer active" style="background-image:url('/assets/restaurant.jpg')"></div>
+        <div class="scroll-bg-layer" style="background-image:url('/assets/barbershop.jpg')"></div>
+        <div class="scroll-bg-layer" style="background-image:url('/assets/fitness.jpg')"></div>
+    </div>
+
+    <header class="site-header">
+        <div class="container">
+            <nav class="site-nav-wrap" aria-label="Main navigation">
+                <a class="brand" href="/">OR Creatives</a>
+                <ul class="site-nav" id="site-menu">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/services">Services</a></li>
+                    <li><a href="/portfolio">Portfolio</a></li>
+                    <li><a href="/clients" aria-current="page">Clients</a></li>
+                    <li><a href="/pricing">Pricing</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li class="nav-indicator" aria-hidden="true"></li>
+                </ul>
+                <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation menu">
+                    <span></span><span></span><span></span>
+                </button>
+                <a class="nav-cta" href="/contact">Get a Quote</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero clients-hero" data-scroll-bg="0">
+            <div class="container page-hero-content">
+                <nav class="breadcrumbs" aria-label="Breadcrumb">
+                    <a href="/">Home</a><span>/</span><span>Clients</span>
+                </nav>
+                <span class="eyebrow">Client presentations</span>
+                <h1>Projects taking shape,<br><span>ready to explore</span></h1>
+                <p>Review websites currently in development through a live, interactive presentation environment built for every client.</p>
+            </div>
+        </section>
+
+        <section class="content-section compact clients-showcase" data-scroll-bg="1">
+            <div class="container">
+                <div class="section-heading align-left">
+                    <span class="eyebrow">Live preview</span>
+                    <h2>Client Project 01</h2>
+                    <p>This first independent workspace is ready to become the next client website. The preview below updates whenever its project files are changed.</p>
+                </div>
+
+                <article class="client-preview-card" data-client-preview>
+                    <div class="client-preview-heading">
+                        <div>
+                            <span class="project-status"><i aria-hidden="true"></i> Presentation environment</span>
+                            <h3>Studio Aurora — Demo concept</h3>
+                        </div>
+                        <a class="button button-secondary" href="/client-projects/client-01/" target="_blank" rel="noopener">Open Full Preview</a>
+                    </div>
+
+                    <div class="preview-browser">
+                        <div class="preview-toolbar">
+                            <div class="browser-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+                            <div class="preview-address">orcreatives.com/client-projects/client-01</div>
+                            <div class="device-switcher" aria-label="Preview size">
+                                <button type="button" class="is-active" data-preview-device="desktop" aria-pressed="true">Desktop</button>
+                                <button type="button" data-preview-device="mobile" aria-pressed="false">Mobile</button>
+                            </div>
+                        </div>
+                        <div class="preview-stage" data-preview-stage="desktop">
+                            <div class="preview-viewport">
+                                <iframe src="/client-projects/client-01/" title="Studio Aurora client website presentation" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="client-preview-details">
+                        <div><small>Project</small><strong>Website presentation template</strong></div>
+                        <div><small>Status</small><strong>Ready for client content</strong></div>
+                        <div><small>Workspace</small><strong>Independent project folder</strong></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="content-section client-workflow" data-scroll-bg="2">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">Built to collaborate</span>
+                    <h2>One presentation space for every client</h2>
+                    <p>Each new project can receive its own independent preview, making review rounds clearer and keeping the OR Creatives website organized.</p>
+                </div>
+                <div class="info-grid">
+                    <article class="info-panel">
+                        <h3>Independent workspace</h3>
+                        <p>Client files stay separated from the main website and from every other presentation.</p>
+                    </article>
+                    <article class="info-panel">
+                        <h3>Live review link</h3>
+                        <p>Clients can browse the current version on desktop or mobile without downloading anything.</p>
+                    </article>
+                    <article class="info-panel">
+                        <h3>Simple iteration</h3>
+                        <p>Future content, pages, assets, and interactions can be added directly to that client's folder.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" data-scroll-bg="0">
+            <div class="narrow">
+                <div class="section-heading">
+                    <span class="eyebrow">Start a project</span>
+                    <h2>Ready to create the next client presentation?</h2>
+                    <p>The workspace is prepared for the client's name, brand, copy, images, pages, and integrations.</p>
+                    <div class="hero-actions">
+                        <a class="button button-primary" href="/contact">Start a Conversation</a>
+                        <a class="button button-secondary" href="/portfolio">View Portfolio</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-wrap">
+            <p>© 2026 OR Creatives. Crafted with passion in Ireland.</p>
+            <div class="footer-links">
+                <a href="/services">Services</a>
+                <a href="/portfolio">Portfolio</a>
+                <a href="/clients">Clients</a>
+                <a href="/pricing">Pricing</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+    <script src="/page-effects.js"></script>
+    <script src="/nav-indicator.js"></script>
+</body>
+</html>
