@@ -31,14 +31,14 @@
     const labelFor = (labels, rawValue) => labels[rawValue] || rawValue;
 
     const buildWhatsAppMessage = (details) => [
-        `Hello, my name is "*${details.name}*", "*${details.message.replace(/\s+/g, ' ')}*".`,
+        `Hello, my name is *${details.name}*, *${details.message.replace(/\s+/g, ' ')}*`,
         '',
         '*Form:*',
-        `> *My full name:* "*${details.name}*"`,
-        `> *My company name:* "*${details.businessName}*"`,
-        `> *My email address:* "*${details.email}*"`,
-        `> *My location:* "*${details.location}*"`,
-        `> *Preferred plan:* "*${details.packageName}*"`,
+        `> *My full name:* ${details.name}`,
+        `> *My company name:* ${details.businessName}`,
+        `> *My email address:* ${details.email}`,
+        `> *My location:* ${details.location}`,
+        `> *Preferred plan:* ${details.packageName}`,
     ].join('\n');
 
     forms.forEach((form) => {
