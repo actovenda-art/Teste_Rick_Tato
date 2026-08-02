@@ -1,20 +1,142 @@
+.nav-menu > a[aria-current="page"] {
+    position: relative;
+    color: var(--foreground);
+}
+
+.nav-menu > a[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -9px;
+    left: 0;
+    height: 2px;
+    border-radius: 99px;
+    background: var(--primary);
+    box-shadow: 0 0 16px rgba(245, 168, 36, 0.7);
+}
+
+.clients-page {
+    overflow: hidden;
+}
+
 .clients-hero {
-    min-height: 570px;
+    min-height: 720px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+}
+
+.clients-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(90deg, var(--background) 0%, rgba(6, 10, 14, 0.88) 44%, rgba(6, 10, 14, 0.35) 100%),
+        radial-gradient(circle at 80% 48%, rgba(245, 168, 36, 0.12), transparent 35%);
+}
+
+.clients-hero-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.16;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(90deg, transparent 5%, #000 55%, #000 100%);
+}
+
+.clients-hero-glow {
+    position: absolute;
+    top: 17%;
+    right: 8%;
+    width: min(42vw, 580px);
+    aspect-ratio: 1;
+    border: 1px solid rgba(245, 168, 36, 0.22);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 80px rgba(245, 168, 36, 0.025),
+        0 0 0 160px rgba(245, 168, 36, 0.015),
+        0 0 120px rgba(245, 168, 36, 0.12);
+}
+
+.clients-hero-content {
+    position: relative;
+    z-index: 2;
+    padding-top: 80px;
+}
+
+.clients-hero h1 {
+    max-width: 950px;
+    margin-top: 24px;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: clamp(68px, 9vw, 124px);
+    font-weight: 600;
+    letter-spacing: -0.055em;
+    line-height: 0.82;
+}
+
+.clients-hero h1 span {
+    display: block;
+    color: var(--primary);
+    font-style: italic;
+    font-weight: 500;
+}
+
+.clients-hero p {
+    max-width: 620px;
+    margin-top: 30px;
+    color: var(--muted);
+    font-size: 17px;
+}
+
+.clients-hero .button {
+    margin-top: 34px;
 }
 
 .clients-showcase {
-    padding-bottom: 120px;
+    background: rgba(16, 22, 30, 0.46);
 }
 
-.clients-showcase .section-heading {
+.clients-section-intro {
     max-width: 760px;
+    margin-bottom: 52px;
+}
+
+.clients-section-intro.centered {
+    margin-inline: auto;
+    text-align: center;
+}
+
+.clients-section-intro h2,
+.clients-cta h2 {
+    margin-top: 18px;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: clamp(52px, 7vw, 88px);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+}
+
+.clients-section-intro p,
+.clients-cta p {
+    max-width: 650px;
+    margin-top: 22px;
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.clients-section-intro.centered p {
+    margin-inline: auto;
 }
 
 .client-preview-card {
     padding: 24px;
     border: 1px solid var(--border);
     border-radius: 28px;
-    background: rgba(18, 18, 24, 0.9);
+    background: rgba(10, 15, 21, 0.94);
     box-shadow: 0 34px 90px rgba(0, 0, 0, 0.34);
     backdrop-filter: blur(18px);
 }
@@ -29,18 +151,21 @@
 
 .client-preview-heading h3 {
     margin-top: 8px;
-    font-size: clamp(22px, 3vw, 31px);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 600;
     letter-spacing: -0.035em;
+    line-height: 1;
 }
 
 .project-status {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 9px;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
 }
 
@@ -48,15 +173,15 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #69d69f;
-    box-shadow: 0 0 0 5px rgba(105, 214, 159, 0.1), 0 0 18px rgba(105, 214, 159, 0.5);
+    background: var(--primary);
+    box-shadow: 0 0 0 5px rgba(245, 168, 36, 0.1), 0 0 18px rgba(245, 168, 36, 0.55);
 }
 
 .preview-browser {
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.11);
     border-radius: 20px;
-    background: #09090c;
+    background: #06090d;
 }
 
 .preview-toolbar {
@@ -66,8 +191,8 @@
     align-items: center;
     gap: 18px;
     padding: 10px 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
-    background: #141419;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: #10161e;
 }
 
 .browser-dots {
@@ -89,10 +214,10 @@
     min-width: 0;
     padding: 8px 14px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 9px;
-    background: rgba(255, 255, 255, 0.035);
-    color: #85858f;
+    background: rgba(255, 255, 255, 0.025);
+    color: #75808d;
     font-size: 12px;
     text-align: center;
     text-overflow: ellipsis;
@@ -114,7 +239,7 @@
     border-radius: 7px;
     outline: 0;
     background: transparent;
-    color: #777780;
+    color: #75808d;
     font: inherit;
     font-size: 11px;
     font-weight: 700;
@@ -124,16 +249,16 @@
 
 .device-switcher button:hover,
 .device-switcher button:focus-visible {
-    color: #fff;
+    color: var(--foreground);
 }
 
 .device-switcher button:focus-visible {
-    box-shadow: 0 0 0 2px #8799ff;
+    box-shadow: 0 0 0 2px var(--primary);
 }
 
 .device-switcher button.is-active {
-    background: rgba(102, 126, 234, 0.18);
-    color: #aab6ff;
+    background: var(--primary-soft);
+    color: var(--primary);
 }
 
 .preview-stage {
@@ -143,8 +268,8 @@
     padding: 18px;
     overflow: hidden;
     background:
-        radial-gradient(circle at 50% 0, rgba(102, 126, 234, 0.08), transparent 45%),
-        #08080b;
+        radial-gradient(circle at 50% 0, rgba(245, 168, 36, 0.07), transparent 45%),
+        #06090d;
 }
 
 .preview-viewport {
@@ -178,7 +303,7 @@
 
 .client-preview-details div {
     padding: 17px 18px;
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--border);
     border-radius: 13px;
     background: rgba(255, 255, 255, 0.025);
 }
@@ -189,7 +314,7 @@
 }
 
 .client-preview-details small {
-    color: #72727c;
+    color: #75808d;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.09em;
@@ -198,12 +323,76 @@
 
 .client-preview-details strong {
     margin-top: 5px;
-    color: #d7d7df;
+    color: #dce2e8;
     font-size: 13px;
 }
 
 .client-workflow {
-    padding-top: 70px;
+    position: relative;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.info-panel {
+    min-height: 290px;
+    padding: 34px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(16, 22, 30, 0.96), rgba(9, 13, 18, 0.96));
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-panel:hover {
+    transform: translateY(-6px);
+    border-color: rgba(245, 168, 36, 0.38);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+}
+
+.info-number {
+    color: var(--primary);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 22px;
+}
+
+.info-panel h3 {
+    margin-top: 68px;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.info-panel p {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.clients-cta {
+    text-align: center;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(245, 168, 36, 0.09), transparent 42%);
+}
+
+.clients-cta-inner {
+    max-width: 860px;
+}
+
+.clients-cta p {
+    margin-inline: auto;
+}
+
+.clients-actions {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 34px;
 }
 
 @media (max-width: 900px) {
@@ -219,11 +408,37 @@
     .device-switcher {
         justify-self: end;
     }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-panel {
+        min-height: 230px;
+    }
+
+    .info-panel h3 {
+        margin-top: 40px;
+    }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
+    .nav-menu > a[aria-current="page"]::after {
+        display: none;
+    }
+
     .clients-hero {
-        min-height: 530px;
+        min-height: 700px;
+    }
+
+    .clients-hero-glow {
+        top: 24%;
+        right: -26%;
+        width: 78vw;
+    }
+
+    .clients-hero h1 {
+        font-size: clamp(56px, 17vw, 88px);
     }
 
     .client-preview-card {
@@ -254,7 +469,11 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 540px) {
+    .clients-hero p {
+        font-size: 15px;
+    }
+
     .preview-toolbar {
         grid-template-columns: 1fr;
     }
@@ -277,10 +496,16 @@
         grid-row: auto;
         text-align: left;
     }
+
+    .clients-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .preview-viewport {
+    .preview-viewport,
+    .info-panel {
         transition: none;
     }
 }

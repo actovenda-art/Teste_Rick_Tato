@@ -3,84 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Interactive previews of websites currently being developed for OR Creatives clients.">
+    <meta name="description" content="Explore live website presentations currently being developed for OR Creatives clients.">
     <title>Clients | OR Creatives</title>
     <link rel="icon" href="/favicon.png" type="image/png">
-    <meta name="theme-color" content="#0a0a0a">
+    <meta name="theme-color" content="#060a0e">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/page-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/flow-styles.css">
     <link rel="stylesheet" href="/clients.css">
-    <link rel="stylesheet" href="/page-transitions.css">
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.umd.min.js" defer></script>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
     <script src="/particle-field.js" defer></script>
-    <script src="/motion-effects.js" defer></script>
+    <script src="/flow.js" defer></script>
     <script src="/clients.js" defer></script>
 </head>
 <body>
-    <div class="scroll-background" aria-hidden="true">
-        <div class="scroll-bg-layer active" style="background-image:url('/assets/restaurant.jpg')"></div>
-        <div class="scroll-bg-layer" style="background-image:url('/assets/barbershop.jpg')"></div>
-        <div class="scroll-bg-layer" style="background-image:url('/assets/fitness.jpg')"></div>
-    </div>
-
-    <header class="site-header">
-        <div class="container">
-            <nav class="site-nav-wrap" aria-label="Main navigation">
-                <a class="brand" href="/">OR Creatives</a>
-                <ul class="site-nav" id="site-menu">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/services">Services</a></li>
-                    <li><a href="/portfolio">Portfolio</a></li>
-                    <li><a href="/clients" aria-current="page">Clients</a></li>
-                    <li><a href="/pricing">Pricing</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                    <li class="nav-indicator" aria-hidden="true"></li>
-                </ul>
-                <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation menu">
-                    <span></span><span></span><span></span>
-                </button>
-                <a class="nav-cta" href="/contact">Get a Quote</a>
-            </nav>
-        </div>
+    <header class="site-header" data-header>
+        <nav class="site-nav" aria-label="Main navigation">
+            <a class="brand" href="/#top" aria-label="OR Creatives home">
+                <span class="brand-mark">OR</span>
+                <span class="brand-name">Creatives</span>
+            </a>
+            <button class="menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="main-menu">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-menu" id="main-menu">
+                <a href="/#work">Work</a>
+                <a href="/#services">Services</a>
+                <a href="/clients" aria-current="page">Clients</a>
+                <a href="/#pricing">Pricing</a>
+                <a href="/#contact">Contact</a>
+                <a class="nav-cta" href="/#contact">Free Consultation</a>
+            </div>
+        </nav>
     </header>
 
-    <main>
-        <section class="page-hero clients-hero" data-scroll-bg="0">
-            <div class="container page-hero-content">
-                <nav class="breadcrumbs" aria-label="Breadcrumb">
-                    <a href="/">Home</a><span>/</span><span>Clients</span>
-                </nav>
-                <span class="eyebrow">Client presentations</span>
-                <h1>Projects taking shape,<br><span>ready to explore</span></h1>
-                <p>Review websites currently in development through a live, interactive presentation environment built for every client.</p>
+    <main class="clients-page">
+        <section class="clients-hero">
+            <div class="clients-hero-grid" aria-hidden="true"></div>
+            <div class="clients-hero-glow" aria-hidden="true"></div>
+            <div class="shell clients-hero-content reveal-group">
+                <span class="section-label">Client Presentations</span>
+                <h1>Projects taking shape,<span>ready to explore</span></h1>
+                <p>Follow active website projects through an interactive presentation environment built for clear reviews and better collaboration.</p>
+                <a class="button button-primary" href="#live-preview">Explore Live Preview <i data-lucide="arrow-down"></i></a>
             </div>
         </section>
 
-        <section class="content-section compact clients-showcase" data-scroll-bg="1">
-            <div class="container">
-                <div class="section-heading align-left">
-                    <span class="eyebrow">Live preview</span>
-                    <h2>Client Project 01</h2>
+        <section class="section clients-showcase" id="live-preview">
+            <div class="shell">
+                <div class="clients-section-intro reveal-group">
+                    <span class="section-label">Live Preview</span>
+                    <h2>Meet the latest<br>client project</h2>
                     <p>Explore the complete institutional presentation created for Ane Hair, with dedicated pages, real portfolio imagery and an integrated booking journey.</p>
                 </div>
 
-                <article class="client-preview-card" data-client-preview>
+                <article class="client-preview-card reveal-item" data-client-preview>
                     <div class="client-preview-heading">
                         <div>
                             <span class="project-status"><i aria-hidden="true"></i> Institutional presentation</span>
                             <h3>Ane Hair — Brazilian Keratin Specialist</h3>
                         </div>
-                        <a class="button button-secondary" href="/client-projects/client-01/" target="_blank" rel="noopener">Open Full Preview</a>
+                        <a class="button button-outline" href="/client-projects/client-01/" target="_blank" rel="noopener">Open Full Preview <i data-lucide="external-link"></i></a>
                     </div>
 
                     <div class="preview-browser">
                         <div class="preview-toolbar">
                             <div class="browser-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-                            <div class="preview-address">orcreatives.com/client-projects/client-01</div>
+                            <div class="preview-address">or-creatives.vercel.app/client-projects/client-01</div>
                             <div class="device-switcher" aria-label="Preview size">
                                 <button type="button" class="is-active" data-preview-device="desktop" aria-pressed="true">Desktop</button>
                                 <button type="button" data-preview-device="mobile" aria-pressed="false">Mobile</button>
@@ -93,7 +86,7 @@
                         </div>
                     </div>
 
-                    <div class="client-preview-details">
+                    <div class="client-preview-details fade-stagger">
                         <div><small>Project</small><strong>Premium multi-page salon website</strong></div>
                         <div><small>Status</small><strong>Institutional content ready</strong></div>
                         <div><small>Workspace</small><strong>Independent project folder</strong></div>
@@ -102,58 +95,69 @@
             </div>
         </section>
 
-        <section class="content-section client-workflow" data-scroll-bg="2">
-            <div class="container">
-                <div class="section-heading">
-                    <span class="eyebrow">Built to collaborate</span>
-                    <h2>One presentation space for every client</h2>
-                    <p>Each new project can receive its own independent preview, making review rounds clearer and keeping the OR Creatives website organized.</p>
+        <section class="section client-workflow">
+            <div class="shell">
+                <div class="clients-section-intro centered reveal-group">
+                    <span class="section-label">Built to Collaborate</span>
+                    <h2>One presentation space<br>for every client</h2>
+                    <p>Each project receives its own focused environment, making review rounds clearer while keeping every client website organised.</p>
                 </div>
-                <div class="info-grid">
+                <div class="info-grid fade-stagger">
                     <article class="info-panel">
-                        <h3>Independent workspace</h3>
-                        <p>Client files stay separated from the main website and from every other presentation.</p>
+                        <span class="info-number">01</span>
+                        <h3>Independent Workspace</h3>
+                        <p>Every client's files and visual identity stay separate from the OR Creatives website and from other projects.</p>
                     </article>
                     <article class="info-panel">
-                        <h3>Live review link</h3>
-                        <p>Clients can browse the current version on desktop or mobile without downloading anything.</p>
+                        <span class="info-number">02</span>
+                        <h3>Live Review Link</h3>
+                        <p>Clients can browse the current version on desktop or mobile without installing or downloading anything.</p>
                     </article>
                     <article class="info-panel">
-                        <h3>Simple iteration</h3>
-                        <p>Future content, pages, assets, and interactions can be added directly to that client's folder.</p>
+                        <span class="info-number">03</span>
+                        <h3>Simple Iteration</h3>
+                        <p>Content, pages, imagery and interactions can evolve directly inside the dedicated presentation.</p>
                     </article>
                 </div>
             </div>
         </section>
 
-        <section class="content-section" data-scroll-bg="0">
-            <div class="narrow">
-                <div class="section-heading">
-                    <span class="eyebrow">Start a project</span>
-                    <h2>Ready to create the next client presentation?</h2>
-                    <p>The workspace is prepared for the client's name, brand, copy, images, pages, and integrations.</p>
-                    <div class="hero-actions">
-                        <a class="button button-primary" href="/contact">Start a Conversation</a>
-                        <a class="button button-secondary" href="/portfolio">View Portfolio</a>
-                    </div>
+        <section class="section clients-cta">
+            <div class="shell clients-cta-inner reveal-group">
+                <span class="section-label">Start a Project</span>
+                <h2>Ready to create<br>your presentation?</h2>
+                <p>Tell us about your business and we will shape a digital experience around your goals, audience and brand.</p>
+                <div class="clients-actions">
+                    <a class="button button-primary" href="/#contact">Start a Conversation <i data-lucide="arrow-right"></i></a>
+                    <a class="button button-outline" href="/#work">View Our Work</a>
                 </div>
             </div>
         </section>
     </main>
 
     <footer class="site-footer">
-        <div class="container footer-wrap">
-            <p>© 2026 OR Creatives. Crafted with passion in Ireland.</p>
-            <div class="footer-links">
-                <a href="/services">Services</a>
-                <a href="/portfolio">Portfolio</a>
-                <a href="/clients">Clients</a>
-                <a href="/pricing">Pricing</a>
-                <a href="/contact">Contact</a>
+        <div class="shell">
+            <div class="footer-main">
+                <div>
+                    <a class="brand" href="/#top">
+                        <span class="brand-mark">OR</span>
+                        <span class="brand-name">Creatives</span>
+                    </a>
+                    <p>Professional websites that turn visitors into paying<br>customers — crafted for small businesses in Ireland &amp;<br>Estados Unidos.</p>
+                </div>
+                <nav class="footer-nav" aria-label="Footer navigation">
+                    <a href="/#work">Work</a>
+                    <a href="/#services">Services</a>
+                    <a href="/clients" aria-current="page">Clients</a>
+                    <a href="/#pricing">Pricing</a>
+                    <a href="/#contact">Contact</a>
+                </nav>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 OR Creatives. Crafted with passion in Ireland.</p>
+                <div><a href="/#top">Privacy</a><a href="/#top">Terms</a></div>
             </div>
         </div>
     </footer>
-    <script src="/page-effects.js"></script>
-    <script src="/nav-indicator.js"></script>
 </body>
 </html>
