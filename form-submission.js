@@ -31,7 +31,7 @@
     const labelFor = (labels, rawValue) => labels[rawValue] || rawValue;
 
     const buildWhatsAppMessage = (details) => [
-        `Hello, my name is *${details.name}*, *${details.message.replace(/\s+/g, ' ')}*`,
+        `Hello, my name is ${details.name}, ${details.message.replace(/\s+/g, ' ')}`,
         '',
         '*Form:*',
         `> *My full name:* ${details.name}`,
