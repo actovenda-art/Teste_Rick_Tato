@@ -1,0 +1,5 @@
+/* Intentionally minimal — see index.css and Tailwind utilities. */
+.App {
+  min-height: 100vh;
+  background: var(--paper-light);
+}

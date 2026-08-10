@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --char: #1E1A16;
+  --char-2: #171310;
+  --forest: #33502F;
+  --forest-dark: #213321;
+  --forest-deep: #182818;
+  --ember: #C8551D;
+  --ember-light: #E17D3E;
+  --marigold: #E3A427;
+  --marigold-light: #EFC060;
+  --paper: #F3E8D2;
+  --paper-light: #FBF5E7;
+  --paper-warm: #EFE1C6;
+  --ink: #241E17;
+  --line: rgba(36, 30, 23, 0.14);
+}
+
+body {
+  margin: 0;
+  background: var(--paper-light);
+  color: var(--ink);
+  font-family: 'Karla', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: 'Fraunces', Georgia, serif;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+
+.font-script {
+  font-family: 'Caveat', cursive;
+}
+
+.font-body {
+  font-family: 'Karla', sans-serif;
+}
+
+::selection {
+  background: var(--marigold);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--marigold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Marquee scroll */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-scroll 32s linear infinite;
+}
+
+/* Ember rise */
+@keyframes ember-rise {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 0.9; }
+  100% { transform: translateY(-380px) translateX(var(--drift, 20px)); opacity: 0; }
+}
+.ember-particle {
+  position: absolute;
+  bottom: -10px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--marigold);
+  filter: drop-shadow(0 0 6px var(--ember));
+  animation: ember-rise 6s linear infinite;
+}
+
+/* Fade up */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.9s ease-out both;
+}
+
+/* Slow zoom for hero image */
+@keyframes slow-zoom {
+  from { transform: scale(1.05); }
+  to { transform: scale(1.15); }
+}
+.animate-slow-zoom {
+  animation: slow-zoom 20s ease-in-out infinite alternate;
+}
+
+/* Smoke drift */
+@keyframes smoke-drift {
+  0% { transform: translateY(0) translateX(0); opacity: 0.4; }
+  100% { transform: translateY(-60px) translateX(20px); opacity: 0; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--paper);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ember);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ember-light);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ember-particle, .animate-marquee, .animate-slow-zoom, .animate-fade-up {
+    animation: none !important;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 42 55% 92%;
+    --foreground: 30 24% 12%;
+    --card: 42 55% 96%;
+    --card-foreground: 30 24% 12%;
+    --primary: 22 76% 45%;
+    --primary-foreground: 42 55% 96%;
+    --secondary: 42 30% 84%;
+    --secondary-foreground: 30 24% 12%;
+    --muted: 42 30% 84%;
+    --muted-foreground: 30 15% 40%;
+    --accent: 40 78% 52%;
+    --accent-foreground: 30 24% 12%;
+    --border: 30 20% 82%;
+    --input: 30 20% 82%;
+    --ring: 22 76% 45%;
+    --radius: 0.75rem;
+  }
+}
