@@ -100,6 +100,11 @@
     background: rgba(16, 22, 30, 0.46);
 }
 
+.client-project-list {
+    display: grid;
+    gap: 72px;
+}
+
 .clients-section-intro {
     max-width: 760px;
     margin-bottom: 52px;
