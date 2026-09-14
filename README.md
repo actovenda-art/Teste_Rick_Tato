@@ -32,6 +32,7 @@ Depois, acesse `http://localhost:8000`.
 - `favicon.png`: ícone da marca OR Creatives.
 - `vercel.json`: configuração de URLs limpas no Vercel.
 - `assets/`: imagens locais da página principal e do portfólio.
+- `cecilia/`: convite mobile-first de aniversário em uma rota independente.
 - `.gitignore`: arquivos locais que não devem ser versionados.
 
 ## Publicação
