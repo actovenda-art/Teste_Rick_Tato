@@ -396,11 +396,11 @@ const galleryDialog = document.querySelector('[data-gallery-dialog]');
 const galleryImage = document.querySelector('[data-gallery-image]');
 const galleryCaption = document.querySelector('[data-gallery-caption]');
 const galleryItems = [
-  { src: 'assets/chacara/chacara-03.jpeg', alt: 'Piscina da Chácara Miracatu com salão de festas ao fundo', caption: 'Piscina e salão — o cenário da Sunshine Party.' },
-  { src: 'assets/chacara/chacara-02.jpeg', alt: 'Jardim arborizado com lago e ponte de madeira', caption: 'Jardim com lago, ponte e muito verde.' },
-  { src: 'assets/chacara/chacara-01.jpeg', alt: 'Área coberta com mesas de bilhar e pebolim', caption: 'Área de jogos com bilhar e pebolim.' },
-  { src: 'assets/chacara/chacara-04.jpeg', alt: 'Vista da varanda de madeira para a piscina e as palmeiras', caption: 'Vista da varanda para a piscina.' },
-  { src: 'assets/chacara/chacara-05.jpeg', alt: 'Salão coberto com churrasqueira e balcão de tijolos', caption: 'Salão coberto com churrasqueira.' },
+  { src: '/cecilia/assets/chacara/chacara-03.jpeg', alt: 'Piscina da Chácara Miracatu com salão de festas ao fundo', caption: 'Piscina e salão — o cenário da Sunshine Party.' },
+  { src: '/cecilia/assets/chacara/chacara-02.jpeg', alt: 'Jardim arborizado com lago e ponte de madeira', caption: 'Jardim com lago, ponte e muito verde.' },
+  { src: '/cecilia/assets/chacara/chacara-01.jpeg', alt: 'Área coberta com mesas de bilhar e pebolim', caption: 'Área de jogos com bilhar e pebolim.' },
+  { src: '/cecilia/assets/chacara/chacara-04.jpeg', alt: 'Vista da varanda de madeira para a piscina e as palmeiras', caption: 'Vista da varanda para a piscina.' },
+  { src: '/cecilia/assets/chacara/chacara-05.jpeg', alt: 'Salão coberto com churrasqueira e balcão de tijolos', caption: 'Salão coberto com churrasqueira.' },
 ];
 
 if (galleryDialog && galleryImage && galleryCaption) {
