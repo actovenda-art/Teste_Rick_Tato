@@ -15,7 +15,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--black); }
+html { scroll-behavior: smooth; background: var(--black); touch-action:pan-x pan-y; }
 body { margin: 0; min-width: 320px; overflow-x: hidden; background: var(--black); color: var(--white); }
 a, button { -webkit-tap-highlight-color: transparent; }
 .skip-link { position: fixed; z-index: 100; top: 1rem; left: 1rem; padding: .75rem 1rem; transform: translateY(-180%); border-radius: .25rem; background: #fff; color: #000; font-weight: 800; }
