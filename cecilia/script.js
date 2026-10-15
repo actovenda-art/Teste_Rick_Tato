@@ -52,6 +52,7 @@ window.addEventListener('resize', requestOpeningUpdate, { passive: true });
 updateOpening();
 
 const EVENT_DATE = new Date('2026-11-28T12:00:00-03:00');
+const PAYMENT_DEADLINE = '2026-10-31';
 const SUPABASE_URL = 'https://gemobwwkeswjtkantogd.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_CZcR0XlqZVTsiOZ5aEViqA_BrPXrATT';
 const STORAGE_BUCKET = 'ceflix-private';
@@ -98,6 +99,9 @@ if (rsvpForm) {
   const guardianPanel = rsvpForm.querySelector('[data-guardian-panel]');
   const guardianInputs = ['guardian_name', 'guardian_authorization', 'guardian_document'].map((name) => rsvpForm.elements[name]);
   const stripePanel = rsvpForm.querySelector('[data-stripe-panel]');
+  const reminderPanel = rsvpForm.querySelector('[data-reminder-panel]');
+  const reminderDateInput = rsvpForm.elements.payment_reminder_date;
+  const reminderPhoneInput = rsvpForm.elements.payment_reminder_phone;
   let currentStep = 0;
 
   const setStatus = (message = '', type = '') => {
@@ -179,6 +183,35 @@ if (rsvpForm) {
     return text || null;
   };
 
+  const localIsoDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const updatePaymentFields = () => {
+    const paymentChoice = rsvpForm.elements.payment_choice.value;
+    const payingNow = paymentChoice === 'now';
+    const payingLater = paymentChoice === 'later';
+
+    stripePanel.hidden = !payingNow;
+    reminderPanel.hidden = !payingLater;
+    reminderDateInput.disabled = !payingLater;
+    reminderPhoneInput.disabled = !payingLater;
+    reminderDateInput.required = payingLater;
+    reminderPhoneInput.required = payingLater;
+
+    if (payingLater) {
+      reminderDateInput.min = localIsoDate(new Date());
+      reminderDateInput.max = PAYMENT_DEADLINE;
+      if (!reminderPhoneInput.value.trim()) reminderPhoneInput.value = rsvpForm.elements.phone.value;
+    } else {
+      reminderDateInput.setCustomValidity('');
+      reminderPhoneInput.setCustomValidity('');
+    }
+  };
+
   birthDateInput.addEventListener('change', updateGuardianFields);
 
   rsvpForm.elements.cpf.addEventListener('input', (event) => {
@@ -211,7 +244,7 @@ if (rsvpForm) {
 
   rsvpForm.querySelectorAll('input[name="payment_choice"]').forEach((input) => {
     input.addEventListener('change', () => {
-      stripePanel.hidden = !(input.value === 'now' && input.checked);
+      updatePaymentFields();
       setStatus();
     });
   });
@@ -298,6 +331,9 @@ if (rsvpForm) {
         payment_choice: 'later',
         payment_status: 'pending',
         payment_proof_path: null,
+        payment_reminder_date: paymentChoice === 'later' ? reminderDateInput.value : null,
+        payment_reminder_phone: paymentChoice === 'later' ? reminderPhoneInput.value.trim() : null,
+        payment_reminder_status: paymentChoice === 'later' ? 'scheduled' : null,
         privacy_consent_at: new Date().toISOString(),
       };
 
@@ -319,8 +355,9 @@ if (rsvpForm) {
         return;
       }
 
-      setStatus('Presença enviada! Lembre-se de realizar o pagamento até 31/10.', 'success');
-      submitButton.textContent = 'Confirmação enviada ✓';
+      const reminderDate = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo' }).format(new Date(`${reminderDateInput.value}T12:00:00-03:00`));
+      setStatus(`Presença confirmada! Seu pedido de lembrete de pagamento para ${reminderDate} foi registrado. ✓`, 'success');
+      submitButton.textContent = 'Presença confirmada ✓';
     } catch (error) {
       if (!rsvpSaved && uploadedPaths.length && client) {
         await client.storage.from(STORAGE_BUCKET).remove(uploadedPaths).catch(() => {});
@@ -333,6 +370,7 @@ if (rsvpForm) {
   });
 
   updateGuardianFields();
+  updatePaymentFields();
   showStep(0);
 
   const checkoutParams = new URLSearchParams(window.location.search);

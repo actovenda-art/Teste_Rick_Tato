@@ -93,7 +93,7 @@
         <div class="section-heading reveal"><div><p>NOTAS DE PRODUÇÃO</p><h3 id="production-title">Antes de dar play</h3></div><span>Informações importantes</span></div>
         <div class="info-grid">
           <article class="info-card info-card--wide reveal"><span class="info-card__icon" aria-hidden="true">📍</span><div><p>LOCAL</p><h4>Chácara Miracatu</h4><span>Rua 4, Monte Mor, SP, 13190-000. Acesso por estrada de terra: organize sua carona ou transporte com antecedência.</span></div></article>
-          <article class="info-card reveal"><span class="info-card__icon" aria-hidden="true">🎟️</span><div><p>CONTRIBUIÇÃO</p><h4>R$ 40,00 por pessoa</h4><span>Ajuda com comida, bebidas não alcoólicas e estrutura.</span><strong>Pagamento até 31/10 = presença confirmada.</strong></div></article>
+          <article class="info-card reveal"><span class="info-card__icon" aria-hidden="true">🎟️</span><div><p>CONTRIBUIÇÃO</p><h4>R$ 40,00 por pessoa</h4><span>Ajuda com comida, bebidas não alcoólicas e estrutura.</span><strong>Envie o formulário para confirmar sua presença. Pagamento até 31/10.</strong></div></article>
           <article class="info-card reveal"><span class="info-card__icon" aria-hidden="true">🍹</span><div><p>BEBIDAS ALCOÓLICAS</p><h4>Cada convidado leva a sua.</h4><span>Válido apenas para maiores de 18 anos que desejarem consumir.</span></div></article>
           <article class="info-card info-card--wide reveal"><span class="info-card__icon" aria-hidden="true">💤</span><div><p>VAI DORMIR?</p><h4>A festa termina oficialmente às 23h.</h4><span>Depois desse horário, só permanece quem tiver combinado previamente que vai dormir na chácara.</span></div></article>
         </div>
@@ -214,12 +214,25 @@
             <fieldset class="payment-choice">
               <legend>Como prefere pagar?</legend>
               <label><input type="radio" name="payment_choice" value="now" required /><span><strong>Pagar agora</strong><small>Finalize em um checkout seguro hospedado pela Stripe.</small></span></label>
-              <label><input type="radio" name="payment_choice" value="later" required /><span><strong>Pagar outro dia</strong><small>Sua confirmação ficará aguardando o pagamento até 31/10.</small></span></label>
+              <label><input type="radio" name="payment_choice" value="later" required /><span><strong>Pagar outro dia</strong><small>Escolha quando deseja receber o lembrete. Sua presença será confirmada agora.</small></span></label>
             </fieldset>
 
             <div class="stripe-panel" data-stripe-panel hidden>
               <div class="stripe-panel__lock" aria-hidden="true">🔒</div>
               <div><p>CHECKOUT SEGURO</p><h5>R$ 40,00</h5><span>Depois de enviar a confirmação, você será direcionado à Stripe para escolher o método disponível e concluir o pagamento.</span></div>
+            </div>
+
+            <div class="reminder-panel" data-reminder-panel hidden>
+              <div class="reminder-panel__heading">
+                <span aria-hidden="true">🔔</span>
+                <div><p>LEMBRETE DE PAGAMENTO</p><h5>Quando devemos lembrar você?</h5></div>
+              </div>
+              <p class="reminder-panel__description">Escolha uma data para receber um lembrete de pagamento e o número de telefone para enviar o lembrete.</p>
+              <div class="field-grid">
+                <label class="field"><span>Data do lembrete *</span><input type="date" name="payment_reminder_date" max="2026-10-31" disabled /></label>
+                <label class="field"><span>Telefone / WhatsApp para o lembrete *</span><input type="tel" name="payment_reminder_phone" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="(19) 99999-9999" disabled /></label>
+              </div>
+              <small class="reminder-panel__note">O pagamento continua pendente, mas sua presença será confirmada assim que o formulário for enviado.</small>
             </div>
 
             <label class="consent-field"><input type="checkbox" name="privacy_consent" required /><span>Li e autorizo o uso destes dados exclusivamente para organização, segurança e confirmação da presença no evento. *</span></label>
