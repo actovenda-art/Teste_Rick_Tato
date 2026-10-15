@@ -90,6 +90,15 @@ function formatPersonName(value) {
     .replace(/(^|[\s'-])(\p{L})/gu, (_, separator, letter) => `${separator}${letter.toLocaleUpperCase('pt-BR')}`);
 }
 
+function normalizeComparablePersonName(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLocaleLowerCase('pt-BR');
+}
+
 function isValidCpf(value) {
   const cpf = onlyDigits(value);
   if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
@@ -122,12 +131,15 @@ if (rsvpForm) {
   const status = rsvpForm.querySelector('[data-form-status]');
   const birthDateInput = rsvpForm.elements.birth_date;
   const guestPhoneInput = rsvpForm.elements.phone;
+  const guestNameInput = rsvpForm.elements.full_name;
+  const emergencyNameInput = rsvpForm.elements.emergency_contact_name;
   const emergencyPhoneInput = rsvpForm.elements.emergency_contact_phone;
   const emergencyRelationshipInput = rsvpForm.elements.emergency_contact_relationship;
   const personalDocumentInput = rsvpForm.elements.personal_document;
-  const documentReview = rsvpForm.querySelector('[data-document-review]');
+  const personalDocumentReview = rsvpForm.querySelector('[data-document-review]');
+  const guardianDocumentReview = rsvpForm.querySelector('[data-guardian-document-review]');
   const guardianPanel = rsvpForm.querySelector('[data-guardian-panel]');
-  const guardianInputs = ['guardian_name', 'guardian_authorization', 'guardian_document'].map((name) => rsvpForm.elements[name]);
+  const guardianInputs = ['guardian_name', 'guardian_cpf', 'guardian_authorization', 'guardian_document'].map((name) => rsvpForm.elements[name]);
   const stripePanel = rsvpForm.querySelector('[data-stripe-panel]');
   const reminderPanel = rsvpForm.querySelector('[data-reminder-panel]');
   const reminderDateInput = rsvpForm.elements.payment_reminder_date;
@@ -141,11 +153,11 @@ if (rsvpForm) {
     status.classList.toggle('is-success', type === 'success');
   };
 
-  const setDocumentReview = (message, type = '') => {
-    documentReview.textContent = message;
-    documentReview.classList.toggle('is-checking', type === 'checking');
-    documentReview.classList.toggle('is-error', type === 'error');
-    documentReview.classList.toggle('is-success', type === 'success');
+  const setDocumentReview = (element, message, type = '') => {
+    element.textContent = message;
+    element.classList.toggle('is-checking', type === 'checking');
+    element.classList.toggle('is-error', type === 'error');
+    element.classList.toggle('is-success', type === 'success');
   };
 
   const showStep = (index) => {
@@ -192,6 +204,7 @@ if (rsvpForm) {
   const validateStep = (index) => {
     if (index === 0) {
       validateDistinctPhones();
+      validateDistinctContactName();
       validateEmergencyRelationship();
     }
     const fields = [...steps[index].querySelectorAll('input, textarea, select')].filter((input) => !input.disabled);
@@ -208,6 +221,11 @@ if (rsvpForm) {
     if (index === 0 && !isValidCpf(rsvpForm.elements.cpf.value)) {
       rsvpForm.elements.cpf.setCustomValidity('Digite um CPF válido.');
       rsvpForm.elements.cpf.reportValidity();
+      return false;
+    }
+    if (index === 2 && isMinorOnEventDate(birthDateInput.value) && !isValidCpf(rsvpForm.elements.guardian_cpf.value)) {
+      rsvpForm.elements.guardian_cpf.setCustomValidity('Digite um CPF válido para o responsável legal.');
+      rsvpForm.elements.guardian_cpf.reportValidity();
       return false;
     }
     return true;
@@ -236,6 +254,14 @@ if (rsvpForm) {
     const emergencyPhone = normalizeBrazilianPhone(emergencyPhoneInput.value);
     const duplicated = Boolean(guestPhone && emergencyPhone && guestPhone === emergencyPhone);
     emergencyPhoneInput.setCustomValidity(duplicated ? 'O contato de emergência deve ter um número diferente do convidado.' : '');
+    return !duplicated;
+  };
+
+  const validateDistinctContactName = () => {
+    const guestName = normalizeComparablePersonName(guestNameInput.value);
+    const emergencyName = normalizeComparablePersonName(emergencyNameInput.value);
+    const duplicated = Boolean(guestName && emergencyName && guestName === emergencyName);
+    emergencyNameInput.setCustomValidity(duplicated ? 'O contato de emergência deve ser uma pessoa diferente do convidado.' : '');
     return !duplicated;
   };
 
@@ -325,19 +351,19 @@ if (rsvpForm) {
     }
   };
 
-  const verifyPersonalDocumentCpf = async () => {
-    const file = personalDocumentInput.files?.[0];
-    const cpf = onlyDigits(rsvpForm.elements.cpf.value);
-    if (!file || !isValidCpf(cpf)) throw new Error('Confira o CPF e selecione o documento pessoal novamente.');
+  const verifyDocumentCpf = async ({ fileInput, cpfInput, reviewElement, ownerLabel }) => {
+    const file = fileInput.files?.[0];
+    const cpf = onlyDigits(cpfInput.value);
+    if (!file || !isValidCpf(cpf)) throw new Error(`Confira o CPF ${ownerLabel} e selecione o documento novamente.`);
     if (!window.Tesseract?.createWorker) throw new Error('A leitura segura do documento não carregou. Verifique sua conexão e tente novamente.');
 
-    setDocumentReview('Preparando o documento para conferir o CPF…', 'checking');
+    setDocumentReview(reviewElement, `Preparando o documento ${ownerLabel} para conferir o CPF…`, 'checking');
     let reviewTargets;
     let imageSource;
     if (file.type === 'application/pdf') {
       const pdfReview = await pdfPagesForReview(file, cpf);
       if (pdfReview.found) {
-        setDocumentReview('CPF localizado no documento. Arquivo pronto para envio. ✓', 'success');
+        setDocumentReview(reviewElement, 'CPF localizado no documento. Arquivo pronto para envio. ✓', 'success');
         return true;
       }
       reviewTargets = pdfReview.canvases;
@@ -352,7 +378,7 @@ if (rsvpForm) {
       logger: (message) => {
         if (message.status !== 'recognizing text') return;
         const progress = Math.max(1, Math.round((message.progress || 0) * 100));
-        setDocumentReview(`Lendo ${reviewUnit} ${currentTarget + 1} de ${reviewTargets.length}… ${progress}%`, 'checking');
+        setDocumentReview(reviewElement, `Lendo ${reviewUnit} ${currentTarget + 1} de ${reviewTargets.length}… ${progress}%`, 'checking');
       },
     });
 
@@ -376,7 +402,7 @@ if (rsvpForm) {
           }
         }
         if (textContainsCpf(result.data.text, cpf)) {
-          setDocumentReview('CPF localizado no documento. Arquivo pronto para envio. ✓', 'success');
+          setDocumentReview(reviewElement, 'CPF localizado no documento. Arquivo pronto para envio. ✓', 'success');
           return true;
         }
       }
@@ -388,9 +414,9 @@ if (rsvpForm) {
       }
     }
 
-    setDocumentReview('O CPF informado não foi localizado. Envie uma foto nítida do documento correto, com o CPF legível.', 'error');
-    personalDocumentInput.setCustomValidity('O documento precisa exibir o mesmo CPF informado no cadastro.');
-    throw new Error('O CPF informado não foi localizado no documento pessoal. Confira o arquivo e tente novamente.');
+    setDocumentReview(reviewElement, 'O CPF informado não foi localizado. Envie uma foto nítida do documento correto, com o CPF legível.', 'error');
+    fileInput.setCustomValidity('O documento precisa exibir o mesmo CPF informado no cadastro.');
+    throw new Error(`O CPF informado não foi localizado no documento ${ownerLabel}. Confira o arquivo e tente novamente.`);
   };
 
   const localIsoDate = (date) => {
@@ -430,13 +456,15 @@ if (rsvpForm) {
     });
   });
 
-  rsvpForm.elements.cpf.addEventListener('input', (event) => {
-    const digits = onlyDigits(event.target.value).slice(0, 11);
-    event.target.setCustomValidity('');
-    event.target.value = digits
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  [rsvpForm.elements.cpf, rsvpForm.elements.guardian_cpf].forEach((input) => {
+    input.addEventListener('input', (event) => {
+      const digits = onlyDigits(event.target.value).slice(0, 11);
+      event.target.setCustomValidity('');
+      event.target.value = digits
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    });
   });
 
   rsvpForm.querySelectorAll('input, textarea, select').forEach((input) => {
@@ -444,9 +472,11 @@ if (rsvpForm) {
       input.removeAttribute('aria-invalid');
       if (input.name === 'phone' || input.name === 'emergency_contact_phone') {
         validateDistinctPhones();
+      } else if (input.name === 'full_name' || input.name === 'emergency_contact_name') {
+        validateDistinctContactName();
       } else if (input.name === 'emergency_contact_relationship') {
         validateEmergencyRelationship();
-      } else if (input.name !== 'cpf') {
+      } else if (input.name !== 'cpf' && input.name !== 'guardian_cpf') {
         input.setCustomValidity('');
       }
     });
@@ -460,7 +490,11 @@ if (rsvpForm) {
       const file = input.files?.[0];
       if (input.name === 'personal_document') {
         input.setCustomValidity('');
-        setDocumentReview(file ? 'Arquivo selecionado. O CPF será conferido antes do envio.' : 'A conferência do CPF acontecerá antes do envio.');
+        setDocumentReview(personalDocumentReview, file ? 'Arquivo selecionado. O CPF será conferido antes do envio.' : 'A conferência do CPF acontecerá antes do envio.');
+      }
+      if (input.name === 'guardian_document') {
+        input.setCustomValidity('');
+        setDocumentReview(guardianDocumentReview, file ? 'Arquivo selecionado. O CPF do responsável será conferido antes do envio.' : 'O CPF do responsável será conferido no documento antes do envio.');
       }
       label?.classList.toggle('has-file', Boolean(file) && input.validationMessage === '');
       if (fileName && file) fileName.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(1)} MB`;
@@ -500,15 +534,29 @@ if (rsvpForm) {
 
     submitButton.disabled = true;
     backButton.disabled = true;
-    submitButton.textContent = 'Conferindo documento…';
-    setStatus('Conferindo o CPF no documento antes do envio…');
+    submitButton.textContent = 'Conferindo documentos…';
+    setStatus('Conferindo os CPFs nos documentos antes do envio…');
     const uploadedPaths = [];
     let client;
     let rsvpSaved = false;
 
     try {
-      await verifyPersonalDocumentCpf();
-      setStatus('CPF conferido. Criando sua confirmação e protegendo os anexos…');
+      const minor = isMinorOnEventDate(birthDateInput.value);
+      await verifyDocumentCpf({
+        fileInput: personalDocumentInput,
+        cpfInput: rsvpForm.elements.cpf,
+        reviewElement: personalDocumentReview,
+        ownerLabel: 'do convidado',
+      });
+      if (minor) {
+        await verifyDocumentCpf({
+          fileInput: rsvpForm.elements.guardian_document,
+          cpfInput: rsvpForm.elements.guardian_cpf,
+          reviewElement: guardianDocumentReview,
+          ownerLabel: 'do responsável',
+        });
+      }
+      setStatus('CPFs conferidos. Criando sua confirmação e protegendo os anexos…');
       client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
       let { data: sessionData } = await client.auth.getSession();
       let user = sessionData.session?.user;
@@ -531,7 +579,6 @@ if (rsvpForm) {
         return path;
       };
 
-      const minor = isMinorOnEventDate(birthDateInput.value);
       const personalDocumentPath = await upload('personal_document', 'documento-pessoal');
       const guardianAuthorizationPath = minor ? await upload('guardian_authorization', 'autorizacao-responsavel') : null;
       const guardianDocumentPath = minor ? await upload('guardian_document', 'documento-responsavel') : null;
@@ -554,6 +601,7 @@ if (rsvpForm) {
         health_notes: nullableValue('health_notes'),
         personal_document_path: personalDocumentPath,
         guardian_name: minor ? formatPersonName(nullableValue('guardian_name')) : null,
+        guardian_cpf: minor ? onlyDigits(rsvpForm.elements.guardian_cpf.value) : null,
         guardian_authorization_path: guardianAuthorizationPath,
         guardian_document_path: guardianDocumentPath,
         // Keep the draft compatible with the currently deployed schema. A successful

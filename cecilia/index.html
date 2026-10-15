@@ -140,7 +140,7 @@
           <p>LISTA DE CONVIDADOS</p>
           <h3 id="rsvp-title">Confirme sua presença</h3>
           <span>Preencha as quatro etapas para reservar seu lugar neste episódio.</span>
-          <div class="rsvp__privacy"><strong>🔒 Seus dados são privados.</strong><span>CPF, informações de saúde e documentos serão usados somente para organizar o evento e atender emergências.</span></div>
+          <div class="rsvp__privacy"><strong>🔒 Seus dados são privados.</strong><span>CPFs, informações de saúde e documentos serão usados somente para organizar o evento e atender emergências.</span></div>
         </div>
 
         <form class="rsvp-form reveal" data-rsvp-form novalidate>
@@ -194,13 +194,16 @@
             <p class="document-review" data-document-review aria-live="polite">A conferência do CPF acontecerá antes do envio.</p>
 
             <div class="guardian-panel" data-guardian-panel hidden>
-              <div class="guardian-panel__alert"><strong>Convidado menor de 18 anos</strong><span>Precisamos da autorização e do documento do responsável legal.</span></div>
+              <div class="guardian-panel__alert"><strong>Convidado menor de 18 anos</strong><span>Precisamos do CPF, da autorização e do documento do responsável legal.</span></div>
               <div class="authorization-template">
                 <p>MODELO DA AUTORIZAÇÃO</p>
                 <blockquote>Eu <strong>[nome do responsável legal]</strong>, portador do CPF <strong>000.000.000-00</strong>, autorizo o(a) <strong>[nome do menor]</strong>, portador do CPF <strong>000.000.000-00</strong>, a participar da festa de aniversário da Cecilia Ferreira que ocorrerá no dia 28/11/2026 na Chácara Miracatu. <strong>Assinatura:</strong> ____________________.</blockquote>
                 <small>A autorização pode ser impressa, mas a assinatura deve ser feita à mão.</small>
               </div>
-              <label class="field"><span>Nome completo do responsável *</span><input type="text" name="guardian_name" autocapitalize="words" maxlength="160" /></label>
+              <div class="field-grid">
+                <label class="field"><span>Nome completo do responsável *</span><input type="text" name="guardian_name" autocapitalize="words" maxlength="160" /></label>
+                <label class="field"><span>CPF do responsável *</span><input type="text" name="guardian_cpf" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="000.000.000-00" /></label>
+              </div>
               <div class="upload-grid">
                 <label class="upload-field">
                   <input type="file" name="guardian_authorization" accept="image/jpeg,image/png" />
@@ -208,9 +211,10 @@
                 </label>
                 <label class="upload-field">
                   <input type="file" name="guardian_document" accept="image/jpeg,image/png,application/pdf" />
-                  <span class="upload-field__icon">＋</span><strong>Documento do responsável *</strong><small data-file-name>Frente e verso em uma imagem ou PDF</small>
+                  <span class="upload-field__icon">＋</span><strong>Documento do responsável *</strong><small data-file-name>Deve mostrar o mesmo CPF informado acima</small>
                 </label>
               </div>
+              <p class="document-review" data-guardian-document-review aria-live="polite">O CPF do responsável será conferido no documento antes do envio.</p>
             </div>
           </div>
 
