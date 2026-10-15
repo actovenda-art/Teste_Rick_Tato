@@ -58,14 +58,6 @@ const STORAGE_BUCKET = 'ceflix-private';
 const MAX_FILE_SIZE = 8 * 1024 * 1024;
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
 
-// Preencha estes três campos para liberar o QR Code Pix real.
-const PIX_CONFIG = Object.freeze({
-  key: '',
-  recipient: '',
-  city: '',
-  amount: '40.00',
-});
-
 const rsvpForm = document.querySelector('[data-rsvp-form]');
 
 function onlyDigits(value) {
@@ -95,50 +87,6 @@ function isMinorOnEventDate(birthDate) {
   return eighteenthBirthday > EVENT_DATE;
 }
 
-function normalizePixText(value, maxLength) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^A-Za-z0-9 $%*+\-./:]/g, '')
-    .toUpperCase()
-    .slice(0, maxLength);
-}
-
-function pixField(id, value) {
-  const text = String(value);
-  return `${id}${String(text.length).padStart(2, '0')}${text}`;
-}
-
-function crc16(payload) {
-  let result = 0xffff;
-  for (let index = 0; index < payload.length; index += 1) {
-    result ^= payload.charCodeAt(index) << 8;
-    for (let bit = 0; bit < 8; bit += 1) {
-      result = (result & 0x8000) !== 0 ? ((result << 1) ^ 0x1021) & 0xffff : (result << 1) & 0xffff;
-    }
-  }
-  return result.toString(16).toUpperCase().padStart(4, '0');
-}
-
-function buildPixPayload(config) {
-  const merchantAccount = pixField('00', 'BR.GOV.BCB.PIX') + pixField('01', config.key.trim()) + pixField('02', 'CEFLIX');
-  const additionalData = pixField('05', '***');
-  const withoutChecksum = [
-    pixField('00', '01'),
-    pixField('01', '12'),
-    pixField('26', merchantAccount),
-    pixField('52', '0000'),
-    pixField('53', '986'),
-    pixField('54', config.amount),
-    pixField('58', 'BR'),
-    pixField('59', normalizePixText(config.recipient, 25)),
-    pixField('60', normalizePixText(config.city, 15)),
-    pixField('62', additionalData),
-    '6304',
-  ].join('');
-  return withoutChecksum + crc16(withoutChecksum);
-}
-
 if (rsvpForm) {
   const steps = [...rsvpForm.querySelectorAll('[data-form-step]')];
   const progressSteps = [...rsvpForm.querySelectorAll('[data-progress-step]')];
@@ -149,12 +97,7 @@ if (rsvpForm) {
   const birthDateInput = rsvpForm.elements.birth_date;
   const guardianPanel = rsvpForm.querySelector('[data-guardian-panel]');
   const guardianInputs = ['guardian_name', 'guardian_authorization', 'guardian_document'].map((name) => rsvpForm.elements[name]);
-  const pixPanel = rsvpForm.querySelector('[data-pix-panel]');
-  const pixPlaceholder = rsvpForm.querySelector('[data-pix-placeholder]');
-  const pixMessage = rsvpForm.querySelector('[data-pix-message]');
-  const proofField = rsvpForm.querySelector('[data-proof-field]');
-  const proofInput = rsvpForm.elements.payment_proof;
-  const pixReady = Boolean(PIX_CONFIG.key && PIX_CONFIG.recipient && PIX_CONFIG.city);
+  const stripePanel = rsvpForm.querySelector('[data-stripe-panel]');
   let currentStep = 0;
 
   const setStatus = (message = '', type = '') => {
@@ -224,24 +167,6 @@ if (rsvpForm) {
     return true;
   };
 
-  const renderPix = () => {
-    pixPanel.hidden = false;
-    if (!pixReady) {
-      pixMessage.textContent = 'O QR Code será liberado assim que a chave Pix, o nome e a cidade do recebedor forem configurados.';
-      proofField.hidden = true;
-      proofInput.required = false;
-      return;
-    }
-
-    pixPlaceholder.innerHTML = '';
-    if (window.QRCode) {
-      new window.QRCode(pixPlaceholder, { text: buildPixPayload(PIX_CONFIG), width: 112, height: 112, correctLevel: window.QRCode.CorrectLevel.M });
-    }
-    pixMessage.textContent = `Escaneie para pagar a contribuição para ${PIX_CONFIG.recipient}. Depois, anexe o comprovante.`;
-    proofField.hidden = false;
-    proofInput.required = true;
-  };
-
   const sanitizeFileName = (name) => {
     const pieces = String(name || 'arquivo').split('.');
     const extension = pieces.length > 1 ? `.${pieces.pop().toLowerCase().replace(/[^a-z0-9]/g, '')}` : '';
@@ -286,12 +211,7 @@ if (rsvpForm) {
 
   rsvpForm.querySelectorAll('input[name="payment_choice"]').forEach((input) => {
     input.addEventListener('change', () => {
-      if (input.value === 'now' && input.checked) renderPix();
-      if (input.value === 'later' && input.checked) {
-        pixPanel.hidden = true;
-        proofField.hidden = true;
-        proofInput.required = false;
-      }
+      stripePanel.hidden = !(input.value === 'now' && input.checked);
       setStatus();
     });
   });
@@ -312,11 +232,6 @@ if (rsvpForm) {
     }
 
     const paymentChoice = rsvpForm.elements.payment_choice.value;
-    if (paymentChoice === 'now' && !pixReady) {
-      setStatus('O pagamento imediato ainda aguarda a configuração da chave Pix. Escolha “Pagar outro dia” para enviar agora.', 'error');
-      return;
-    }
-
     if (!window.supabase?.createClient) {
       setStatus('Não foi possível carregar o envio seguro. Verifique sua conexão e tente novamente.', 'error');
       return;
@@ -328,6 +243,7 @@ if (rsvpForm) {
     setStatus('Criando sua confirmação e protegendo os anexos…');
     const uploadedPaths = [];
     let client;
+    let rsvpSaved = false;
 
     try {
       client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
@@ -356,8 +272,6 @@ if (rsvpForm) {
       const personalDocumentPath = await upload('personal_document', 'documento-pessoal');
       const guardianAuthorizationPath = minor ? await upload('guardian_authorization', 'autorizacao-responsavel') : null;
       const guardianDocumentPath = minor ? await upload('guardian_document', 'documento-responsavel') : null;
-      const paymentProofPath = paymentChoice === 'now' ? await upload('payment_proof', 'comprovante-pix') : null;
-
       const payload = {
         user_id: user.id,
         full_name: nullableValue('full_name'),
@@ -378,19 +292,36 @@ if (rsvpForm) {
         guardian_name: minor ? nullableValue('guardian_name') : null,
         guardian_authorization_path: guardianAuthorizationPath,
         guardian_document_path: guardianDocumentPath,
-        payment_choice: paymentChoice,
-        payment_status: paymentChoice === 'now' ? 'proof_sent' : 'pending',
-        payment_proof_path: paymentProofPath,
+        // Keep the draft compatible with the currently deployed schema. A successful
+        // Stripe return promotes it to "now/confirmed" below.
+        payment_choice: 'later',
+        payment_status: 'pending',
+        payment_proof_path: null,
         privacy_consent_at: new Date().toISOString(),
       };
 
-      const { error } = await client.from('ceflix_rsvps').upsert(payload, { onConflict: 'user_id' });
+      const { data: savedRsvp, error } = await client.from('ceflix_rsvps').upsert(payload, { onConflict: 'user_id' }).select('id').single();
       if (error) throw error;
+      rsvpSaved = true;
 
-      setStatus(paymentChoice === 'now' ? 'Presença enviada! O comprovante ficará aguardando a conferência da organização.' : 'Presença enviada! Lembre-se de realizar o pagamento até 31/10.', 'success');
+      if (paymentChoice === 'now') {
+        setStatus('Confirmação salva. Abrindo o checkout seguro da Stripe…');
+        submitButton.textContent = 'Abrindo pagamento…';
+        const checkoutResponse = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rsvpId: savedRsvp.id }),
+        });
+        const checkout = await checkoutResponse.json().catch(() => ({}));
+        if (!checkoutResponse.ok || !checkout.url) throw new Error(checkout.error || 'Não foi possível abrir o pagamento.');
+        window.location.assign(checkout.url);
+        return;
+      }
+
+      setStatus('Presença enviada! Lembre-se de realizar o pagamento até 31/10.', 'success');
       submitButton.textContent = 'Confirmação enviada ✓';
     } catch (error) {
-      if (uploadedPaths.length && client) {
+      if (!rsvpSaved && uploadedPaths.length && client) {
         await client.storage.from(STORAGE_BUCKET).remove(uploadedPaths).catch(() => {});
       }
       setStatus(error?.message || 'Não foi possível enviar sua confirmação. Tente novamente.', 'error');
@@ -402,6 +333,49 @@ if (rsvpForm) {
 
   updateGuardianFields();
   showStep(0);
+
+  const checkoutParams = new URLSearchParams(window.location.search);
+  const checkoutResult = checkoutParams.get('pagamento');
+  const checkoutSessionId = checkoutParams.get('session_id');
+
+  if (checkoutResult === 'cancelado') {
+    showStep(steps.length - 1);
+    setStatus('Pagamento cancelado. Sua confirmação foi salva e continua aguardando pagamento.', 'error');
+    history.replaceState({}, '', `${window.location.pathname}#confirmar-presenca`);
+  }
+
+  if (checkoutResult === 'sucesso' && checkoutSessionId) {
+    showStep(steps.length - 1);
+    setStatus('Confirmando o pagamento com a Stripe…');
+    fetch(`/api/checkout-status?session_id=${encodeURIComponent(checkoutSessionId)}`)
+      .then(async (response) => {
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || 'Não foi possível confirmar o pagamento.');
+        if (!result.paid) {
+          setStatus('Pagamento recebido e ainda em processamento. A confirmação será atualizada assim que a Stripe concluir.', 'success');
+          return;
+        }
+
+        setStatus('Pagamento confirmado! Sua presença no CEFLIX está garantida. ✓', 'success');
+        if (!window.supabase?.createClient || !result.rsvpId) return;
+        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        const { data: sessionData } = await client.auth.getSession();
+        if (sessionData.session?.user) {
+          try {
+            const { error: updateError } = await client.from('ceflix_rsvps').update({
+              payment_choice: 'now',
+              payment_status: 'confirmed',
+              payment_proof_path: `stripe-checkout:${checkoutSessionId}`,
+            }).eq('id', result.rsvpId);
+            if (updateError) console.warn('Pagamento confirmado; sincronização da presença pendente.', updateError);
+          } catch (error) {
+            console.warn('Pagamento confirmado; sincronização da presença pendente.', error);
+          }
+        }
+      })
+      .catch((error) => setStatus(error?.message || 'Não foi possível confirmar o pagamento.', 'error'))
+      .finally(() => history.replaceState({}, '', `${window.location.pathname}#confirmar-presenca`));
+  }
 }
 
 const galleryDialog = document.querySelector('[data-gallery-dialog]');

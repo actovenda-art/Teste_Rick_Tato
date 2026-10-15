@@ -1,0 +1,8 @@
+{
+  "name": "or-creatives-site",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "stripe": "23.0.0"
+  }
+}

@@ -212,17 +212,13 @@
             <div class="payment-summary"><span>Contribuição por pessoa</span><strong>R$ 40,00</strong></div>
             <fieldset class="payment-choice">
               <legend>Como prefere pagar?</legend>
-              <label><input type="radio" name="payment_choice" value="now" required /><span><strong>Pagar agora</strong><small>Veja o QR Code Pix e envie o comprovante.</small></span></label>
+              <label><input type="radio" name="payment_choice" value="now" required /><span><strong>Pagar agora</strong><small>Finalize em um checkout seguro hospedado pela Stripe.</small></span></label>
               <label><input type="radio" name="payment_choice" value="later" required /><span><strong>Pagar outro dia</strong><small>Sua confirmação ficará aguardando o pagamento até 31/10.</small></span></label>
             </fieldset>
 
-            <div class="pix-panel" data-pix-panel hidden>
-              <div class="pix-placeholder" data-pix-placeholder role="img" aria-label="QR Code Pix"><span>PIX</span></div>
-              <div><p>PAGAMENTO PIX</p><h5>R$ 40,00</h5><span data-pix-message>O QR Code será liberado assim que os dados da chave Pix forem configurados.</span></div>
-              <label class="upload-field upload-field--proof" data-proof-field hidden>
-                <input type="file" name="payment_proof" accept="image/jpeg,image/png,application/pdf" />
-                <span class="upload-field__icon">＋</span><strong>Anexar comprovante *</strong><small data-file-name>JPG, PNG ou PDF de até 8 MB</small>
-              </label>
+            <div class="stripe-panel" data-stripe-panel hidden>
+              <div class="stripe-panel__lock" aria-hidden="true">🔒</div>
+              <div><p>CHECKOUT SEGURO</p><h5>R$ 40,00</h5><span>Depois de enviar a confirmação, você será direcionado à Stripe para escolher o método disponível e concluir o pagamento.</span></div>
             </div>
 
             <label class="consent-field"><input type="checkbox" name="privacy_consent" required /><span>Li e autorizo o uso destes dados exclusivamente para organização, segurança e confirmação da presença no evento. *</span></label>
@@ -262,7 +258,6 @@
       <footer class="footer"><span class="brand brand--footer"><span>C</span>EFLIX</span><p>Meu Aniversário · 28 de novembro</p></footer>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js" integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF" crossorigin="anonymous"></script>
     <script src="/cecilia/script.js"></script>
   </body>
