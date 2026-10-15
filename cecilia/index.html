@@ -154,7 +154,7 @@
           <div class="form-step is-active" data-form-step="0">
             <div class="form-step__heading"><span>01</span><div><p>SOBRE VOCÊ</p><h4>Dados básicos</h4></div></div>
             <div class="field-grid">
-              <label class="field field--wide"><span>Nome completo *</span><input type="text" name="full_name" autocomplete="name" minlength="3" maxlength="160" required /></label>
+              <label class="field field--wide"><span>Nome completo *</span><input type="text" name="full_name" autocomplete="name" autocapitalize="words" minlength="3" maxlength="160" required /></label>
               <label class="field"><span>Data de nascimento *</span><input type="date" name="birth_date" max="2026-11-28" required /><small>Usaremos a data para identificar convidados menores de 18 anos.</small></label>
               <label class="field"><span>CPF *</span><input type="text" name="cpf" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="000.000.000-00" required /></label>
               <label class="field"><span>Celular / WhatsApp *</span><input type="tel" name="phone" autocomplete="tel" maxlength="20" placeholder="(19) 99999-9999" required /></label>
@@ -164,7 +164,7 @@
             <fieldset class="field-group">
               <legend>Contato de emergência</legend>
               <div class="field-grid">
-                <label class="field"><span>Nome completo *</span><input type="text" name="emergency_contact_name" maxlength="160" required /></label>
+                <label class="field"><span>Nome completo *</span><input type="text" name="emergency_contact_name" autocapitalize="words" maxlength="160" required /></label>
                 <label class="field"><span>Parentesco / relação *</span><input type="text" name="emergency_contact_relationship" maxlength="80" placeholder="Ex.: mãe, pai, amiga" required /><small>Informe o vínculo real. Não use “eu” ou “eu mesmo”.</small></label>
                 <label class="field field--wide"><span>Telefone *</span><input type="tel" name="emergency_contact_phone" maxlength="20" placeholder="(19) 99999-9999" required /></label>
               </div>
@@ -200,7 +200,7 @@
                 <blockquote>Eu <strong>[nome do responsável legal]</strong>, portador do CPF <strong>000.000.000-00</strong>, autorizo o(a) <strong>[nome do menor]</strong>, portador do CPF <strong>000.000.000-00</strong>, a participar da festa de aniversário da Cecilia Ferreira que ocorrerá no dia 28/11/2026 na Chácara Miracatu. <strong>Assinatura:</strong> ____________________.</blockquote>
                 <small>A autorização pode ser impressa, mas a assinatura deve ser feita à mão.</small>
               </div>
-              <label class="field"><span>Nome completo do responsável *</span><input type="text" name="guardian_name" maxlength="160" /></label>
+              <label class="field"><span>Nome completo do responsável *</span><input type="text" name="guardian_name" autocapitalize="words" maxlength="160" /></label>
               <div class="upload-grid">
                 <label class="upload-field">
                   <input type="file" name="guardian_authorization" accept="image/jpeg,image/png" />

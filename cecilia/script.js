@@ -82,6 +82,14 @@ function containsStandaloneWord(value, word) {
   return normalizedWords.includes(word);
 }
 
+function formatPersonName(value) {
+  return String(value || '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLocaleLowerCase('pt-BR')
+    .replace(/(^|[\s'-])(\p{L})/gu, (_, separator, letter) => `${separator}${letter.toLocaleUpperCase('pt-BR')}`);
+}
+
 function isValidCpf(value) {
   const cpf = onlyDigits(value);
   if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
@@ -124,6 +132,7 @@ if (rsvpForm) {
   const reminderPanel = rsvpForm.querySelector('[data-reminder-panel]');
   const reminderDateInput = rsvpForm.elements.payment_reminder_date;
   const reminderPhoneInput = rsvpForm.elements.payment_reminder_phone;
+  const personNameInputs = ['full_name', 'emergency_contact_name', 'guardian_name'].map((name) => rsvpForm.elements[name]);
   let currentStep = 0;
 
   const setStatus = (message = '', type = '') => {
@@ -214,6 +223,12 @@ if (rsvpForm) {
   const nullableValue = (name) => {
     const text = String(rsvpForm.elements[name]?.value || '').trim();
     return text || null;
+  };
+
+  const formatPersonNameFields = () => {
+    personNameInputs.forEach((input) => {
+      if (input.value.trim()) input.value = formatPersonName(input.value);
+    });
   };
 
   const validateDistinctPhones = () => {
@@ -367,6 +382,12 @@ if (rsvpForm) {
 
   birthDateInput.addEventListener('change', updateGuardianFields);
 
+  personNameInputs.forEach((input) => {
+    input.addEventListener('blur', () => {
+      input.value = formatPersonName(input.value);
+    });
+  });
+
   rsvpForm.elements.cpf.addEventListener('input', (event) => {
     const digits = onlyDigits(event.target.value).slice(0, 11);
     event.target.setCustomValidity('');
@@ -413,6 +434,7 @@ if (rsvpForm) {
   });
 
   nextButton.addEventListener('click', () => {
+    formatPersonNameFields();
     if (!validateStep(currentStep)) return;
     if (currentStep === 0) updateGuardianFields();
     showStep(currentStep + 1);
@@ -422,6 +444,7 @@ if (rsvpForm) {
 
   rsvpForm.addEventListener('submit', async (event) => {
     event.preventDefault();
+    formatPersonNameFields();
     if (!validateStep(currentStep) || !rsvpForm.checkValidity()) {
       rsvpForm.reportValidity();
       return;
@@ -472,12 +495,12 @@ if (rsvpForm) {
       const guardianDocumentPath = minor ? await upload('guardian_document', 'documento-responsavel') : null;
       const payload = {
         user_id: user.id,
-        full_name: nullableValue('full_name'),
+        full_name: formatPersonName(nullableValue('full_name')),
         birth_date: birthDateInput.value,
         cpf: onlyDigits(rsvpForm.elements.cpf.value),
         phone: nullableValue('phone'),
         email: nullableValue('email')?.toLowerCase() || null,
-        emergency_contact_name: nullableValue('emergency_contact_name'),
+        emergency_contact_name: formatPersonName(nullableValue('emergency_contact_name')),
         emergency_contact_relationship: nullableValue('emergency_contact_relationship'),
         emergency_contact_phone: nullableValue('emergency_contact_phone'),
         address: nullableValue('address'),
@@ -488,7 +511,7 @@ if (rsvpForm) {
         physical_limitations: nullableValue('physical_limitations'),
         health_notes: nullableValue('health_notes'),
         personal_document_path: personalDocumentPath,
-        guardian_name: minor ? nullableValue('guardian_name') : null,
+        guardian_name: minor ? formatPersonName(nullableValue('guardian_name')) : null,
         guardian_authorization_path: guardianAuthorizationPath,
         guardian_document_path: guardianDocumentPath,
         // Keep the draft compatible with the currently deployed schema. A successful
