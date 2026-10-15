@@ -96,6 +96,8 @@ if (rsvpForm) {
   const submitButton = rsvpForm.querySelector('[data-form-submit]');
   const status = rsvpForm.querySelector('[data-form-status]');
   const birthDateInput = rsvpForm.elements.birth_date;
+  const guestPhoneInput = rsvpForm.elements.phone;
+  const emergencyPhoneInput = rsvpForm.elements.emergency_contact_phone;
   const guardianPanel = rsvpForm.querySelector('[data-guardian-panel]');
   const guardianInputs = ['guardian_name', 'guardian_authorization', 'guardian_document'].map((name) => rsvpForm.elements[name]);
   const stripePanel = rsvpForm.querySelector('[data-stripe-panel]');
@@ -152,6 +154,7 @@ if (rsvpForm) {
   };
 
   const validateStep = (index) => {
+    if (index === 0) validateDistinctPhones();
     const fields = [...steps[index].querySelectorAll('input, textarea, select')].filter((input) => !input.disabled);
     for (const input of fields) {
       if (input.type === 'file') validateFile(input);
@@ -181,6 +184,14 @@ if (rsvpForm) {
   const nullableValue = (name) => {
     const text = String(rsvpForm.elements[name]?.value || '').trim();
     return text || null;
+  };
+
+  const validateDistinctPhones = () => {
+    const guestPhone = onlyDigits(guestPhoneInput.value);
+    const emergencyPhone = onlyDigits(emergencyPhoneInput.value);
+    const duplicated = Boolean(guestPhone && emergencyPhone && guestPhone === emergencyPhone);
+    emergencyPhoneInput.setCustomValidity(duplicated ? 'O contato de emergência deve ter um número diferente do convidado.' : '');
+    return !duplicated;
   };
 
   const localIsoDate = (date) => {
@@ -226,7 +237,11 @@ if (rsvpForm) {
   rsvpForm.querySelectorAll('input, textarea, select').forEach((input) => {
     input.addEventListener('input', () => {
       input.removeAttribute('aria-invalid');
-      if (input.name !== 'cpf') input.setCustomValidity('');
+      if (input.name === 'phone' || input.name === 'emergency_contact_phone') {
+        validateDistinctPhones();
+      } else if (input.name !== 'cpf') {
+        input.setCustomValidity('');
+      }
     });
   });
 
