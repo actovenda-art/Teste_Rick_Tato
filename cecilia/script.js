@@ -247,32 +247,54 @@ if (rsvpForm) {
 
   const textContainsCpf = (text, cpf) => onlyDigits(text).includes(cpf);
 
-  const imageFileToCanvas = async (file) => {
-    let image;
-    let objectUrl;
-    if (window.createImageBitmap) {
-      image = await createImageBitmap(file);
-    } else {
-      objectUrl = URL.createObjectURL(file);
-      image = new Image();
-      image.src = objectUrl;
-      await image.decode();
-    }
-    const sourceWidth = image.width || image.naturalWidth;
-    const sourceHeight = image.height || image.naturalHeight;
-    const scale = Math.min(3, Math.max(1, 1800 / sourceWidth), 2400 / sourceWidth);
+  const rotateAndEnhanceCanvas = (source, degrees) => {
+    const quarterTurn = Math.abs(degrees) % 180 === 90;
     const canvas = document.createElement('canvas');
-    canvas.width = Math.max(1, Math.round(sourceWidth * scale));
-    canvas.height = Math.max(1, Math.round(sourceHeight * scale));
+    canvas.width = quarterTurn ? source.height : source.width;
+    canvas.height = quarterTurn ? source.width : source.height;
     const context = canvas.getContext('2d', { alpha: false });
     context.fillStyle = '#fff';
     context.fillRect(0, 0, canvas.width, canvas.height);
-    context.imageSmoothingEnabled = true;
-    context.imageSmoothingQuality = 'high';
-    context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    image.close?.();
-    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    context.translate(canvas.width / 2, canvas.height / 2);
+    context.rotate((degrees * Math.PI) / 180);
+    context.filter = 'grayscale(1) contrast(1.55)';
+    context.drawImage(source, -source.width / 2, -source.height / 2);
     return canvas;
+  };
+
+  const imageFileToSourceCanvas = async (file) => {
+    let image;
+    let objectUrl;
+    try {
+      if (window.createImageBitmap) {
+        try {
+          image = await createImageBitmap(file, { imageOrientation: 'from-image' });
+        } catch {
+          image = await createImageBitmap(file);
+        }
+      } else {
+        objectUrl = URL.createObjectURL(file);
+        image = new Image();
+        image.src = objectUrl;
+        await image.decode();
+      }
+      const sourceWidth = image.width || image.naturalWidth;
+      const sourceHeight = image.height || image.naturalHeight;
+      const scale = Math.min(1.75, 2400 / Math.max(sourceWidth, sourceHeight));
+      const source = document.createElement('canvas');
+      source.width = Math.max(1, Math.round(sourceWidth * scale));
+      source.height = Math.max(1, Math.round(sourceHeight * scale));
+      const context = source.getContext('2d', { alpha: false });
+      context.fillStyle = '#fff';
+      context.fillRect(0, 0, source.width, source.height);
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = 'high';
+      context.drawImage(image, 0, 0, source.width, source.height);
+      return source;
+    } finally {
+      image?.close?.();
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    }
   };
 
   const pdfPagesForReview = async (file, cpf) => {
@@ -311,6 +333,7 @@ if (rsvpForm) {
 
     setDocumentReview('Preparando o documento para conferir o CPF…', 'checking');
     let reviewTargets;
+    let imageSource;
     if (file.type === 'application/pdf') {
       const pdfReview = await pdfPagesForReview(file, cpf);
       if (pdfReview.found) {
@@ -319,24 +342,39 @@ if (rsvpForm) {
       }
       reviewTargets = pdfReview.canvases;
     } else {
-      reviewTargets = [await imageFileToCanvas(file)];
+      imageSource = await imageFileToSourceCanvas(file);
+      reviewTargets = [0, -90, 90, 180];
     }
 
+    let currentTarget = 0;
+    const reviewUnit = imageSource ? 'orientação' : 'página';
     const worker = await window.Tesseract.createWorker('eng', 1, {
       logger: (message) => {
         if (message.status !== 'recognizing text') return;
         const progress = Math.max(1, Math.round((message.progress || 0) * 100));
-        setDocumentReview(`Lendo o documento no seu navegador… ${progress}%`, 'checking');
+        setDocumentReview(`Lendo ${reviewUnit} ${currentTarget + 1} de ${reviewTargets.length}… ${progress}%`, 'checking');
       },
     });
 
     try {
       await worker.setParameters({
         tessedit_char_whitelist: '0123456789.-/ ',
+        tessedit_pageseg_mode: '11',
         preserve_interword_spaces: '1',
       });
-      for (const target of reviewTargets) {
-        const result = await worker.recognize(target);
+      for (currentTarget = 0; currentTarget < reviewTargets.length; currentTarget += 1) {
+        const target = imageSource
+          ? rotateAndEnhanceCanvas(imageSource, reviewTargets[currentTarget])
+          : reviewTargets[currentTarget];
+        let result;
+        try {
+          result = await worker.recognize(target);
+        } finally {
+          if (imageSource) {
+            target.width = 1;
+            target.height = 1;
+          }
+        }
         if (textContainsCpf(result.data.text, cpf)) {
           setDocumentReview('CPF localizado no documento. Arquivo pronto para envio. ✓', 'success');
           return true;
@@ -344,6 +382,10 @@ if (rsvpForm) {
       }
     } finally {
       await worker.terminate();
+      if (imageSource) {
+        imageSource.width = 1;
+        imageSource.height = 1;
+      }
     }
 
     setDocumentReview('O CPF informado não foi localizado. Envie uma foto nítida do documento correto, com o CPF legível.', 'error');
