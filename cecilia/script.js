@@ -190,7 +190,7 @@ if (rsvpForm) {
       .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
   });
 
-  rsvpForm.querySelectorAll('input, textarea').forEach((input) => {
+  rsvpForm.querySelectorAll('input, textarea, select').forEach((input) => {
     input.addEventListener('input', () => {
       input.removeAttribute('aria-invalid');
       if (input.name !== 'cpf') input.setCustomValidity('');
@@ -283,6 +283,7 @@ if (rsvpForm) {
         emergency_contact_relationship: nullableValue('emergency_contact_relationship'),
         emergency_contact_phone: nullableValue('emergency_contact_phone'),
         address: nullableValue('address'),
+        blood_type: nullableValue('blood_type'),
         allergy_restrictions: nullableValue('allergy_restrictions'),
         medications: nullableValue('medications'),
         dietary_restrictions: nullableValue('dietary_restrictions'),
