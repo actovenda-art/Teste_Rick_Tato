@@ -165,7 +165,7 @@
               <legend>Contato de emergência</legend>
               <div class="field-grid">
                 <label class="field"><span>Nome completo *</span><input type="text" name="emergency_contact_name" maxlength="160" required /></label>
-                <label class="field"><span>Parentesco / relação *</span><input type="text" name="emergency_contact_relationship" maxlength="80" placeholder="Ex.: mãe, pai, amiga" required /></label>
+                <label class="field"><span>Parentesco / relação *</span><input type="text" name="emergency_contact_relationship" maxlength="80" placeholder="Ex.: mãe, pai, amiga" required /><small>Informe o vínculo real. Não use “eu” ou “eu mesmo”.</small></label>
                 <label class="field field--wide"><span>Telefone *</span><input type="tel" name="emergency_contact_phone" maxlength="20" placeholder="(19) 99999-9999" required /></label>
               </div>
             </fieldset>
@@ -186,11 +186,12 @@
 
           <div class="form-step" data-form-step="2" hidden>
             <div class="form-step__heading"><span>03</span><div><p>IDENTIFICAÇÃO</p><h4>Documentos</h4></div></div>
-            <p class="form-help">Envie arquivos JPG, PNG ou PDF de até 8 MB. Os anexos ficam em uma área privada.</p>
+            <p class="form-help">Envie arquivos JPG, PNG ou PDF de até 8 MB. Antes do envio, o CPF informado será procurado no documento no seu próprio navegador. Os anexos ficam em uma área privada.</p>
             <label class="upload-field">
               <input type="file" name="personal_document" accept="image/jpeg,image/png,application/pdf" required />
-              <span class="upload-field__icon">＋</span><strong>Documento pessoal *</strong><small data-file-name>RG, CNH ou outro documento com foto</small>
+              <span class="upload-field__icon">＋</span><strong>Documento pessoal *</strong><small data-file-name>RG, CNH ou outro documento com foto e o mesmo CPF do cadastro</small>
             </label>
+            <p class="document-review" data-document-review aria-live="polite">A conferência do CPF acontecerá antes do envio.</p>
 
             <div class="guardian-panel" data-guardian-panel hidden>
               <div class="guardian-panel__alert"><strong>Convidado menor de 18 anos</strong><span>Precisamos da autorização e do documento do responsável legal.</span></div>
@@ -277,6 +278,8 @@
       <footer class="footer"><span class="brand brand--footer"><span>C</span>EFLIX</span><p>Meu Aniversário · 28 de novembro</p></footer>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js" integrity="sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF" crossorigin="anonymous"></script>
     <script src="/cecilia/script.js"></script>
   </body>

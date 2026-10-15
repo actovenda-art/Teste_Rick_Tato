@@ -206,6 +206,10 @@ a, button { -webkit-tap-highlight-color: transparent; }
 .upload-field small { max-width:28rem; color:#85858b; font-size:.71rem; line-height:1.4; }
 .upload-field.has-file { border-style:solid; border-color:#46d369; background:rgba(70,211,105,.05); }
 .upload-field.has-file .upload-field__icon { background:#173c21; color:#7de497; }
+.document-review { margin:.75rem 0 0; color:#929297; font-size:.72rem; line-height:1.45; }
+.document-review.is-checking { color:#d8c85a; }
+.document-review.is-error { color:#ff8c92; }
+.document-review.is-success { color:#7de497; }
 .guardian-panel { display:grid; gap:1rem; margin-top:1.2rem; padding:1.2rem; border:1px solid rgba(255,216,61,.25); border-radius:.45rem; background:rgba(255,216,61,.035); }
 .guardian-panel[hidden] { display:none; }
 .guardian-panel__alert { display:grid; gap:.25rem; }

@@ -65,6 +65,23 @@ function onlyDigits(value) {
   return String(value || '').replace(/\D/g, '');
 }
 
+function normalizeBrazilianPhone(value) {
+  const digits = onlyDigits(value);
+  if (/^0055\d{10,11}$/.test(digits)) return digits.slice(4);
+  if (/^55\d{10,11}$/.test(digits)) return digits.slice(2);
+  return digits;
+}
+
+function containsStandaloneWord(value, word) {
+  const normalizedWords = String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('pt-BR')
+    .split(/[^a-z]+/)
+    .filter(Boolean);
+  return normalizedWords.includes(word);
+}
+
 function isValidCpf(value) {
   const cpf = onlyDigits(value);
   if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
@@ -98,6 +115,9 @@ if (rsvpForm) {
   const birthDateInput = rsvpForm.elements.birth_date;
   const guestPhoneInput = rsvpForm.elements.phone;
   const emergencyPhoneInput = rsvpForm.elements.emergency_contact_phone;
+  const emergencyRelationshipInput = rsvpForm.elements.emergency_contact_relationship;
+  const personalDocumentInput = rsvpForm.elements.personal_document;
+  const documentReview = rsvpForm.querySelector('[data-document-review]');
   const guardianPanel = rsvpForm.querySelector('[data-guardian-panel]');
   const guardianInputs = ['guardian_name', 'guardian_authorization', 'guardian_document'].map((name) => rsvpForm.elements[name]);
   const stripePanel = rsvpForm.querySelector('[data-stripe-panel]');
@@ -110,6 +130,13 @@ if (rsvpForm) {
     status.textContent = message;
     status.classList.toggle('is-error', type === 'error');
     status.classList.toggle('is-success', type === 'success');
+  };
+
+  const setDocumentReview = (message, type = '') => {
+    documentReview.textContent = message;
+    documentReview.classList.toggle('is-checking', type === 'checking');
+    documentReview.classList.toggle('is-error', type === 'error');
+    documentReview.classList.toggle('is-success', type === 'success');
   };
 
   const showStep = (index) => {
@@ -154,7 +181,10 @@ if (rsvpForm) {
   };
 
   const validateStep = (index) => {
-    if (index === 0) validateDistinctPhones();
+    if (index === 0) {
+      validateDistinctPhones();
+      validateEmergencyRelationship();
+    }
     const fields = [...steps[index].querySelectorAll('input, textarea, select')].filter((input) => !input.disabled);
     for (const input of fields) {
       if (input.type === 'file') validateFile(input);
@@ -187,11 +217,123 @@ if (rsvpForm) {
   };
 
   const validateDistinctPhones = () => {
-    const guestPhone = onlyDigits(guestPhoneInput.value);
-    const emergencyPhone = onlyDigits(emergencyPhoneInput.value);
+    const guestPhone = normalizeBrazilianPhone(guestPhoneInput.value);
+    const emergencyPhone = normalizeBrazilianPhone(emergencyPhoneInput.value);
     const duplicated = Boolean(guestPhone && emergencyPhone && guestPhone === emergencyPhone);
     emergencyPhoneInput.setCustomValidity(duplicated ? 'O contato de emergência deve ter um número diferente do convidado.' : '');
     return !duplicated;
+  };
+
+  const validateEmergencyRelationship = () => {
+    const selfRelationship = containsStandaloneWord(emergencyRelationshipInput.value, 'eu');
+    emergencyRelationshipInput.setCustomValidity(selfRelationship ? 'Informe o vínculo com outra pessoa. Não use “eu” ou “eu mesmo”.' : '');
+    return !selfRelationship;
+  };
+
+  const textContainsCpf = (text, cpf) => onlyDigits(text).includes(cpf);
+
+  const imageFileToCanvas = async (file) => {
+    let image;
+    let objectUrl;
+    if (window.createImageBitmap) {
+      image = await createImageBitmap(file);
+    } else {
+      objectUrl = URL.createObjectURL(file);
+      image = new Image();
+      image.src = objectUrl;
+      await image.decode();
+    }
+    const sourceWidth = image.width || image.naturalWidth;
+    const sourceHeight = image.height || image.naturalHeight;
+    const scale = Math.min(3, Math.max(1, 1800 / sourceWidth), 2400 / sourceWidth);
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(sourceWidth * scale));
+    canvas.height = Math.max(1, Math.round(sourceHeight * scale));
+    const context = canvas.getContext('2d', { alpha: false });
+    context.fillStyle = '#fff';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = 'high';
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    image.close?.();
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    return canvas;
+  };
+
+  const pdfPagesForReview = async (file, cpf) => {
+    if (!window.pdfjsLib?.getDocument) throw new Error('Não foi possível abrir o PDF para conferir o CPF. Envie uma imagem nítida ou tente novamente.');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+    const pdf = await window.pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+    const canvases = [];
+    try {
+      const pagesToCheck = Math.min(pdf.numPages, 2);
+      for (let pageNumber = 1; pageNumber <= pagesToCheck; pageNumber += 1) {
+        const page = await pdf.getPage(pageNumber);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map((item) => item.str || '').join(' ');
+        if (textContainsCpf(pageText, cpf)) return { found: true, canvases: [] };
+
+        const baseViewport = page.getViewport({ scale: 1 });
+        const scale = Math.min(3, Math.max(1.6, 2200 / baseViewport.width));
+        const viewport = page.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        await page.render({ canvasContext: canvas.getContext('2d', { alpha: false }), viewport }).promise;
+        canvases.push(canvas);
+      }
+      return { found: false, canvases };
+    } finally {
+      await pdf.destroy();
+    }
+  };
+
+  const verifyPersonalDocumentCpf = async () => {
+    const file = personalDocumentInput.files?.[0];
+    const cpf = onlyDigits(rsvpForm.elements.cpf.value);
+    if (!file || !isValidCpf(cpf)) throw new Error('Confira o CPF e selecione o documento pessoal novamente.');
+    if (!window.Tesseract?.createWorker) throw new Error('A leitura segura do documento não carregou. Verifique sua conexão e tente novamente.');
+
+    setDocumentReview('Preparando o documento para conferir o CPF…', 'checking');
+    let reviewTargets;
+    if (file.type === 'application/pdf') {
+      const pdfReview = await pdfPagesForReview(file, cpf);
+      if (pdfReview.found) {
+        setDocumentReview('CPF localizado no documento. Arquivo pronto para envio. ✓', 'success');
+        return true;
+      }
+      reviewTargets = pdfReview.canvases;
+    } else {
+      reviewTargets = [await imageFileToCanvas(file)];
+    }
+
+    const worker = await window.Tesseract.createWorker('eng', 1, {
+      logger: (message) => {
+        if (message.status !== 'recognizing text') return;
+        const progress = Math.max(1, Math.round((message.progress || 0) * 100));
+        setDocumentReview(`Lendo o documento no seu navegador… ${progress}%`, 'checking');
+      },
+    });
+
+    try {
+      await worker.setParameters({
+        tessedit_char_whitelist: '0123456789.-/ ',
+        preserve_interword_spaces: '1',
+      });
+      for (const target of reviewTargets) {
+        const result = await worker.recognize(target);
+        if (textContainsCpf(result.data.text, cpf)) {
+          setDocumentReview('CPF localizado no documento. Arquivo pronto para envio. ✓', 'success');
+          return true;
+        }
+      }
+    } finally {
+      await worker.terminate();
+    }
+
+    setDocumentReview('O CPF informado não foi localizado. Envie uma foto nítida do documento correto, com o CPF legível.', 'error');
+    personalDocumentInput.setCustomValidity('O documento precisa exibir o mesmo CPF informado no cadastro.');
+    throw new Error('O CPF informado não foi localizado no documento pessoal. Confira o arquivo e tente novamente.');
   };
 
   const localIsoDate = (date) => {
@@ -239,6 +381,8 @@ if (rsvpForm) {
       input.removeAttribute('aria-invalid');
       if (input.name === 'phone' || input.name === 'emergency_contact_phone') {
         validateDistinctPhones();
+      } else if (input.name === 'emergency_contact_relationship') {
+        validateEmergencyRelationship();
       } else if (input.name !== 'cpf') {
         input.setCustomValidity('');
       }
@@ -251,6 +395,10 @@ if (rsvpForm) {
       const label = input.closest('.upload-field');
       const fileName = label?.querySelector('[data-file-name]');
       const file = input.files?.[0];
+      if (input.name === 'personal_document') {
+        input.setCustomValidity('');
+        setDocumentReview(file ? 'Arquivo selecionado. O CPF será conferido antes do envio.' : 'A conferência do CPF acontecerá antes do envio.');
+      }
       label?.classList.toggle('has-file', Boolean(file) && input.validationMessage === '');
       if (fileName && file) fileName.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(1)} MB`;
       if (!input.checkValidity()) input.reportValidity();
@@ -287,13 +435,15 @@ if (rsvpForm) {
 
     submitButton.disabled = true;
     backButton.disabled = true;
-    submitButton.textContent = 'Enviando com segurança…';
-    setStatus('Criando sua confirmação e protegendo os anexos…');
+    submitButton.textContent = 'Conferindo documento…';
+    setStatus('Conferindo o CPF no documento antes do envio…');
     const uploadedPaths = [];
     let client;
     let rsvpSaved = false;
 
     try {
+      await verifyPersonalDocumentCpf();
+      setStatus('CPF conferido. Criando sua confirmação e protegendo os anexos…');
       client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
       let { data: sessionData } = await client.auth.getSession();
       let user = sessionData.session?.user;
