@@ -271,7 +271,20 @@ if (rsvpForm) {
     return !selfRelationship;
   };
 
-  const textContainsCpf = (text, cpf) => onlyDigits(text).includes(cpf);
+  const normalizeOcrCpfCandidate = (value) => String(value || '')
+    .toUpperCase()
+    .replace(/[OQ]/g, '0')
+    .replace(/[IL|!]/g, '1')
+    .replace(/Z/g, '2')
+    .replace(/S/g, '5')
+    .replace(/G/g, '6')
+    .replace(/B/g, '8');
+
+  const textContainsCpf = (text, cpf) => {
+    if (onlyDigits(text).includes(cpf)) return true;
+    const digitLikeRuns = String(text || '').match(/[0-9OQILSZGB|!][0-9OQILSZGB|!\s./-]{9,}/gi) || [];
+    return digitLikeRuns.some((candidate) => onlyDigits(normalizeOcrCpfCandidate(candidate)).includes(cpf));
+  };
 
   const rotateAndEnhanceCanvas = (source, degrees) => {
     const quarterTurn = Math.abs(degrees) % 180 === 90;
@@ -286,6 +299,35 @@ if (rsvpForm) {
     context.filter = 'grayscale(1) contrast(1.55)';
     context.drawImage(source, -source.width / 2, -source.height / 2);
     return canvas;
+  };
+
+  const createFocusedOcrRegions = (source) => {
+    const columns = [[0, 0.72], [0.28, 1]];
+    const rows = [[0, 0.55], [0.2, 0.8], [0.45, 1]];
+    const genericRegions = columns.flatMap(([left, right]) => rows.map(([top, bottom]) => [left, right, top, bottom]));
+    const regions = [
+      [0.48, 0.78, 0.36, 0.58],
+      [0.48, 0.78, 0.43, 0.63],
+      ...genericRegions,
+    ];
+    return regions.map(([leftRatio, rightRatio, topRatio, bottomRatio]) => {
+      const sourceX = Math.floor(source.width * leftRatio);
+      const sourceY = Math.floor(source.height * topRatio);
+      const sourceWidth = Math.max(1, Math.ceil(source.width * (rightRatio - leftRatio)));
+      const sourceHeight = Math.max(1, Math.ceil(source.height * (bottomRatio - topRatio)));
+      const scale = Math.min(6, 2600 / sourceWidth);
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(sourceWidth * scale));
+      canvas.height = Math.max(1, Math.round(sourceHeight * scale));
+      const context = canvas.getContext('2d', { alpha: false });
+      context.fillStyle = '#fff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = 'high';
+      context.filter = 'grayscale(1) contrast(1.35)';
+      context.drawImage(source, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvas.width, canvas.height);
+      return canvas;
+    });
   };
 
   const imageFileToSourceCanvas = async (file) => {
@@ -373,21 +415,24 @@ if (rsvpForm) {
     }
 
     let currentTarget = 0;
-    const reviewUnit = imageSource ? 'orientação' : 'página';
+    let progressTargetCount = reviewTargets.length;
+    let reviewUnit = imageSource ? 'orientação' : 'página';
     const worker = await window.Tesseract.createWorker('eng', 1, {
       logger: (message) => {
         if (message.status !== 'recognizing text') return;
         const progress = Math.max(1, Math.round((message.progress || 0) * 100));
-        setDocumentReview(reviewElement, `Lendo ${reviewUnit} ${currentTarget + 1} de ${reviewTargets.length}… ${progress}%`, 'checking');
+        setDocumentReview(reviewElement, `Lendo ${reviewUnit} ${currentTarget + 1} de ${progressTargetCount}… ${progress}%`, 'checking');
       },
     });
 
     try {
       await worker.setParameters({
-        tessedit_char_whitelist: '0123456789.-/ ',
+        tessedit_char_whitelist: '',
         tessedit_pageseg_mode: '11',
         preserve_interword_spaces: '1',
       });
+      let bestOrientation = 0;
+      let bestConfidence = -1;
       for (currentTarget = 0; currentTarget < reviewTargets.length; currentTarget += 1) {
         const target = imageSource
           ? rotateAndEnhanceCanvas(imageSource, reviewTargets[currentTarget])
@@ -404,6 +449,44 @@ if (rsvpForm) {
         if (textContainsCpf(result.data.text, cpf)) {
           setDocumentReview(reviewElement, 'CPF localizado no documento. Arquivo pronto para envio. ✓', 'success');
           return true;
+        }
+        if (imageSource) {
+          const confidence = Number(result.data.confidence) || 0;
+          if (confidence > bestConfidence) {
+            bestConfidence = confidence;
+            bestOrientation = reviewTargets[currentTarget];
+          }
+        }
+      }
+
+      if (imageSource) {
+        const focusedSource = rotateAndEnhanceCanvas(imageSource, bestOrientation);
+        const focusedRegions = createFocusedOcrRegions(focusedSource);
+        progressTargetCount = focusedRegions.length;
+        reviewUnit = 'região ampliada';
+        setDocumentReview(reviewElement, 'Localizando o campo do CPF com leitura ampliada…', 'checking');
+        try {
+          for (currentTarget = 0; currentTarget < focusedRegions.length; currentTarget += 1) {
+            const region = focusedRegions[currentTarget];
+            try {
+              await worker.setParameters({ tessedit_pageseg_mode: currentTarget < 2 ? '6' : '11' });
+              const result = await worker.recognize(region);
+              if (textContainsCpf(result.data.text, cpf)) {
+                setDocumentReview(reviewElement, 'CPF localizado no documento. Arquivo pronto para envio. ✓', 'success');
+                return true;
+              }
+            } finally {
+              region.width = 1;
+              region.height = 1;
+            }
+          }
+        } finally {
+          focusedRegions.forEach((region) => {
+            region.width = 1;
+            region.height = 1;
+          });
+          focusedSource.width = 1;
+          focusedSource.height = 1;
         }
       }
     } finally {
