@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#090909" />
+    <meta name="description" content="Confirmação e pagamento de presença para familiares no aniversário da Cecilia." />
+    <title>CEFLIX — Família</title>
+    <link rel="icon" type="image/svg+xml" href="/cecilia/favicon.svg" />
+    <link rel="stylesheet" href="/cecilia-familia/styles.css" />
+  </head>
+  <body>
+    <main class="family-page">
+      <header class="family-nav"><a class="family-brand" href="/cecilia" aria-label="Voltar para CEFLIX"><span>C</span>EFLIX</a><span>CONVITE PARA FAMÍLIA</span></header>
+
+      <section class="family-hero">
+        <p>EPISÓDIO ESPECIAL</p>
+        <h1>Sua família<br />está na lista.</h1>
+        <span>Confirme os adultos e finalize a contribuição em um checkout seguro.</span>
+      </section>
+
+      <section class="family-flow" aria-labelledby="family-form-title">
+        <div class="family-flow__intro">
+          <p>CEFLIX · 28 DE NOVEMBRO</p>
+          <h2 id="family-form-title">Confirmação familiar</h2>
+          <span>R$ 50,00 por adulto. A presença é registrada individualmente após a confirmação do pagamento.</span>
+          <div class="family-flow__note"><strong>✓ Pagamento único</strong><span>Não há opção de pagar depois nesta página.</span></div>
+        </div>
+
+        <form class="family-form" data-family-form novalidate>
+          <ol class="family-progress" aria-label="Progresso da confirmação"><li class="is-active" data-family-progress="0"><span>1</span>Adultos</li><li data-family-progress="1"><span>2</span>Pagamento</li></ol>
+
+          <section class="family-step is-active" data-family-step="0">
+            <div class="family-step__heading"><span>01</span><div><p>QUEM VAI?</p><h3>Adultos da família</h3></div></div>
+            <label class="family-field"><span>Seu nome completo *</span><input type="text" name="primary_name" autocomplete="name" autocapitalize="words" minlength="3" maxlength="160" required /></label>
+            <label class="family-field"><span>Número de acompanhantes maiores de 18 anos *</span><input type="number" name="companion_count" min="0" max="20" value="0" inputmode="numeric" required /><small>Informe apenas pessoas adultas. Cada uma receberá seu próprio registro de presença.</small></label>
+            <div class="companion-fields" data-companion-fields aria-live="polite"></div>
+          </section>
+
+          <section class="family-step" data-family-step="1" hidden>
+            <div class="family-step__heading"><span>02</span><div><p>CHECKOUT SEGURO</p><h3>Pagamento</h3></div></div>
+            <div class="family-summary" data-family-summary aria-live="polite"></div>
+            <label class="coupon-field"><span>Cupom de desconto</span><div><input type="text" name="coupon_code" inputmode="text" maxlength="4" autocomplete="off" autocapitalize="characters" placeholder="Ex.: A7K2" /><small>O desconto é aplicado a um ingresso adulto.</small></div></label>
+            <div class="checkout-card"><span aria-hidden="true">🔒</span><div><p>PAGAMENTO OBRIGATÓRIO</p><strong>Stripe Checkout</strong><small>Ao confirmar, você será direcionado para escolher o método disponível e concluir o pagamento.</small></div></div>
+          </section>
+
+          <div class="family-actions"><button type="button" class="family-button family-button--quiet" data-family-back hidden>Voltar</button><button type="button" class="family-button family-button--primary" data-family-next>Continuar</button><button type="submit" class="family-button family-button--pay" data-family-submit hidden>Ir para o pagamento</button></div>
+          <p class="family-status" data-family-status role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="family-success" data-family-success hidden aria-live="polite"><p>CONFIRMAÇÃO CONCLUÍDA</p><h2>Presenças registradas.</h2><span>Os adultos foram adicionados individualmente à lista como pagos. Nos vemos no CEFLIX.</span><a class="family-button family-button--primary" href="/cecilia">Voltar ao convite</a></section>
+    </main>
+
+    <footer class="family-footer"><span class="family-brand"><span>C</span>EFLIX</span><a href="#admin" data-admin-access>Meu Aniversário</a><span>28 de novembro</span></footer>
+
+    <dialog class="admin-dialog" data-admin-dialog aria-labelledby="admin-title">
+      <button class="admin-dialog__close" type="button" data-admin-close aria-label="Fechar">×</button>
+      <div data-admin-login>
+        <p>ACESSO DE ORGANIZAÇÃO</p><h2 id="admin-title">Gerar cupom</h2><span>Use o acesso informado pela organização para liberar desconto de um ingresso adulto.</span>
+        <form data-admin-login-form>
+          <label class="family-field"><span>Login</span><input type="text" name="login" autocomplete="username" required /></label>
+          <label class="family-field"><span>Senha</span><input type="password" name="password" autocomplete="current-password" required /></label>
+          <button class="family-button family-button--primary" type="submit">Acessar</button>
+        </form>
+      </div>
+      <div data-admin-generator hidden>
+        <p>DESCONTO EM UM INGRESSO</p><h2>Emitir cupom</h2>
+        <form data-admin-coupon-form>
+          <label class="family-field"><span>Porcentagem de desconto</span><input type="number" name="discount_percent" min="1" max="99" value="25" inputmode="numeric" required /><small>O desconto será limitado a um adulto, mesmo em pagamentos com mais pessoas.</small></label>
+          <button class="family-button family-button--pay" type="submit">Gerar código</button>
+        </form>
+        <div class="generated-coupon" data-generated-coupon hidden><span>CUPOM GERADO</span><strong data-generated-code></strong><small data-generated-description></small></div>
+      </div>
+      <p class="admin-status" data-admin-status role="status" aria-live="polite"></p>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF" crossorigin="anonymous"></script>
+    <script src="/cecilia-familia/script.js"></script>
+  </body>
+</html>

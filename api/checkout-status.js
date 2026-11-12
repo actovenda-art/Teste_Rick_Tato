@@ -1,5 +1,7 @@
 import Stripe from 'stripe';
 
+const FAMILY_ADULT_PRICE_IN_CENTS = 5000;
+
 export default async function handler(request, response) {
   if (request.method !== 'GET') {
     response.setHeader('Allow', 'GET');
@@ -25,7 +27,21 @@ export default async function handler(request, response) {
       && session.amount_total === 4000
       && session.currency === 'brl';
 
-    if (!isCeflixPayment) {
+    const adultCount = Number(session.metadata?.adult_count);
+    const discountCents = Number(session.metadata?.discount_cents || 0);
+    const isFamilyPayment = session.metadata?.event === 'ceflix-family-2026'
+      && session.metadata?.payment_reference === rsvpId
+      && /^[0-9a-f-]{36}$/i.test(rsvpId || '')
+      && Number.isInteger(adultCount)
+      && adultCount >= 1
+      && adultCount <= 21
+      && Number.isInteger(discountCents)
+      && discountCents >= 0
+      && discountCents < FAMILY_ADULT_PRICE_IN_CENTS
+      && session.amount_total === (adultCount * FAMILY_ADULT_PRICE_IN_CENTS) - discountCents
+      && session.currency === 'brl';
+
+    if (!isCeflixPayment && !isFamilyPayment) {
       return response.status(404).json({ error: 'Esta sessão não pertence ao pagamento do CEFLIX.' });
     }
 
@@ -33,7 +49,12 @@ export default async function handler(request, response) {
       paid: session.status === 'complete' && session.payment_status === 'paid',
       paymentStatus: session.payment_status,
       status: session.status,
-      rsvpId,
+      kind: isFamilyPayment ? 'family' : 'rsvp',
+      rsvpId: isCeflixPayment ? rsvpId : undefined,
+      paymentReference: isFamilyPayment ? rsvpId : undefined,
+      adultCount: isFamilyPayment ? adultCount : undefined,
+      discountCents: isFamilyPayment ? discountCents : undefined,
+      couponCode: isFamilyPayment ? (session.metadata?.coupon_code || null) : undefined,
     });
   } catch (error) {
     console.error('Stripe Checkout status lookup failed', {
